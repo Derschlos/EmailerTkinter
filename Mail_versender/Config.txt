@@ -1,0 +1,8 @@
+{"Username": "David Leon Schmidt",
+                "baseColor" : "lightsalmon",
+                "EditPageColor" : "lightsalmon",
+                "EditPageDimensions" : "475x450",
+                "CreateMailColor": "lightsalmon",
+                "CreateMailDimensions" : "430x200",
+                "TextEditPageColor" : "lightsalmon",
+                "TextEditPageDimensions" : "500x500"}
