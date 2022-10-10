@@ -169,7 +169,7 @@ if __name__ == '__main__':
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "430x200",
                 "TextEditPageColor" : "lightsalmon",
-                "TextEditPageDimensions" : "500x500",
+                "TextEditPageDimensions" : "700x500",
                 "TextBlock": {
                                 "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
                                 "Datei" : ["{file}", "lightblue"],

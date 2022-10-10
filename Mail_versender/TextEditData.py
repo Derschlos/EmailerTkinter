@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from Models import Kontakt,MailText
+import re
 
 class TextEditPage(tk.Frame):
     def __init__(self,parent, controller):
@@ -26,7 +27,7 @@ class TextEditPage(tk.Frame):
         self.saveBut = tk.Button(self, command = self.saveChanges, text = 'Save Changes')
     
         self.textFrame = tk.Frame(self, bg=self.bg)
-        self.textField = tk.Text(self.textFrame, width = 50, height = 15)
+        self.textField = tk.Text(self.textFrame, width = 70, height = 15)
         self.textYScroll = tk.ttk.Scrollbar(self.textFrame, orient="vertical", command= self.textField.yview)
         self.textXScroll = tk.ttk.Scrollbar(self.textFrame, orient='horizontal', command= self.textField.xview)
         self.textField['yscrollcommand'] = self.textYScroll.set
@@ -78,17 +79,24 @@ class TextEditPage(tk.Frame):
         self.textField.delete('1.0', 'end')
         selectedText = self.textCombo.get()
         if selectedText == '<New Text>':
-            selectedText = Text()
+            selectedText = MailText()
         else:
             selectedText = self.controller.texts[self.textIdByTitle[selectedText]]
         text = selectedText.text.replace(r'\n','\n')
         self.textField.insert('1.0',text)
         for key, vals in self.textBlocks.items():
-            b= 0
-            a = self.textField.search(all,vals[0],'1.0')
-            print(a,b)
-##            self.textField.tag_add()
-
+            timesFound= len(re.findall(vals[0], text))
+            
+            start = '1.0'
+            if timesFound:
+                for i in range(timesFound):
+                    countVar= tk.StringVar()
+                    search  = self.textField.search(vals[0],start, count= countVar)
+                    endChar = f'{search}+{countVar.get()}c'
+                    self.textField.tag_add(key, search, endChar)
+                    start = endChar
+                self.textField.tag_config(key, background = vals[1])
+            
 
 
 
