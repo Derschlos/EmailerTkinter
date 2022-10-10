@@ -5,4 +5,10 @@
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "430x200",
                 "TextEditPageColor" : "lightsalmon",
-                "TextEditPageDimensions" : "500x500"}
+                "TextEditPageDimensions" : "500x500",
+                "TextBlock": {
+                                "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
+                                "Datei" : ["{file}", "lightblue"],
+                                "Link" : ["{link}", "lightyellow"]
+                            }
+                        }

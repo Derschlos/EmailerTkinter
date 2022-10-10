@@ -50,8 +50,8 @@ class SelectorPage(tk.Frame):
     def onRaise(self):
         self.controller.root.title('Create E-Mail')
         self.controller.root.config()
-        self.controller.root.geometry(self.controller.configString['CreateMailDimensions'])
-        self.config(bg = self.controller.configString['CreateMailColor'])
+        self.controller.root.geometry(self.controller.configVars['CreateMailDimensions'])
+        self.config(bg = self.controller.configVars['CreateMailColor'])
          
     def update(self, *args):
         pass

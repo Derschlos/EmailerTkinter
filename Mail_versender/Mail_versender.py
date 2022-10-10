@@ -81,7 +81,7 @@ def navigate(instructionString):
 class basedesk:
     def __init__(self,root, configString):
         self.root = root
-        self.configString  = configString
+        self.configVars  = configString
         self.root.config()
         self.root.title('Base page')
         self.root.geometry('370x200')
@@ -92,17 +92,22 @@ class basedesk:
         self.lastFrame =''
         self.kontakte = {}
         self.texts = {}
-        
+        self.kontChoices = []
+        self.textChoices = []
+        self.textIdByTitle = {}
         self.con = sqlite3.connect('Kontakte.db')
         self.cur = self.con.cursor()
+
         self.initReadDB(self.cur)
+        self.updateCombos()
         self.frames = {}
         for f in (SelectorPage,EditPage,TextEditPage):
             frame = f(self.baseContainer, self)
             self.frames[frame.pageName] = frame
             frame.grid(row = 0, column = 0, sticky ="nsew")
         self.showFrame('SelectorPage')
-        
+
+
     def showFrame(self,frameName):
         frame= self.frames[frameName]
         frame.tkraise()
@@ -113,6 +118,7 @@ class basedesk:
             self.frames[frameName].update(*args)
         except:
             pass
+        
     def setLastFrame(self, frameName):
         self.lastFrame = frameName
         
@@ -124,7 +130,10 @@ class basedesk:
             elif message == True:
                 self.frames[pageName].saveChanges()
             else:
-                self.savedChanges = True        
+                self.savedChanges = True
+        if self.frames[self.lastFrame].pageName==pageName:
+            self.showFrame('SelectorPage')
+            return
         self.showFrame(self.lastFrame)
         
     def initReadDB(self, cur):
@@ -141,6 +150,14 @@ class basedesk:
             textModel.fill(idNum, text, subj,title)
             self.texts[idNum] = textModel
 
+    def updateCombos(self):
+        self.kontChoices = list(self.kontakte.keys())
+        self.kontChoices.append('<New Contact>')
+        self.textChoices = [text.title for idNum,text in self.texts.items()]
+        self.textChoices.append('<New Text>')
+        self.textIdByTitle = {text.title:idNum for idNum, text in self.texts.items()}
+
+        
 
 if __name__ == '__main__':
     setupDB()
@@ -152,7 +169,13 @@ if __name__ == '__main__':
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "430x200",
                 "TextEditPageColor" : "lightsalmon",
-                "TextEditPageDimensions" : "500x500"}'''
+                "TextEditPageDimensions" : "500x500",
+                "TextBlock": {
+                                "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
+                                "Datei" : ["{file}", "lightblue"],
+                                "Link" : ["{link}", "lightyellow"]
+                            }
+                        }'''
     if os.path.isfile(configFile):
         with open(configFile, 'r') as f:
             configString = f.read()

@@ -8,12 +8,11 @@ class EditPage(tk.Frame):
         self.pageName = 'EditPage'
         self.controller = controller
         self.savedChanges = True
-        self.bg = self.controller.configString['EditPageColor']
+        self.bg = self.controller.configVars['EditPageColor']
         self.curKontakt = None
         self.kontakte = self.controller.kontakte
         self.texts = self.controller.texts
-        self.kontChoices = list(self.kontakte.keys())
-        self.kontChoices.append('<New Contact>')
+        self.kontChoices = self.controller.kontChoices
         self.kontaktVar = tk.StringVar()
         self.kontaktComb = tk.ttk.Combobox(self, textvariable =self.kontaktVar)
         self.kontaktComb['values'] = self.kontChoices
@@ -35,9 +34,8 @@ class EditPage(tk.Frame):
         self.curText = None
         self.textVar = tk.StringVar()
         self.textTitleVar = tk.StringVar()
-        self.textChoices = [text.title for idNum,text in self.texts.items()]
-        self.textChoices.append('<New Text>')
-        self.textIdByTitle = {text.title:idNum for idNum, text in self.texts.items()}
+        self.textChoices = self.controller.textChoices
+        self.textIdByTitle = self.controller.textIdByTitle
         self.textCombo = tk.ttk.Combobox(self.textFrame, textvariable =self.textTitleVar, state = 'disabled')
         self.textCombo['values'] = self.textChoices
         self.textCombo.bind('<<ComboboxSelected>>', self.displayText)
@@ -88,8 +86,8 @@ class EditPage(tk.Frame):
     
     def onRaise(self):
         self.controller.root.title('Edit Contacts')
-        self.controller.root.geometry(self.controller.configString['EditPageDimensions'])
-        self.config(bg = self.controller.configString['EditPageColor'])
+        self.controller.root.geometry(self.controller.configVars['EditPageDimensions'])
+        self.config(bg = self.controller.configVars['EditPageColor'])
 
     def update(self, textId,*args):
         pass
@@ -121,14 +119,15 @@ class EditPage(tk.Frame):
         if textName == '':
             return
         if textName == '<New Text>':
-            self.controller.showFrame('TextEditPage')
-            self.controller.setLastFrame(self.pageName)
+            self.editText()
             return
         curTextId = self.textIdByTitle[textName]
         self.curText = self.texts[curTextId]
         self.textVar.set(self.curText.text.replace(r'\n', '\n'))
     
     def editText(self):
+        self.controller.setLastFrame(self.pageName)
+        self.controller.showFrame('TextEditPage')
         pass
         
     
