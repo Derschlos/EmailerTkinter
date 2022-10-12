@@ -14,6 +14,7 @@ class Kontakt:
         self.dir = directory
         self.person = person
     
+    
 class MailText:
     def __init__(self):
         self.idNum = ''
@@ -25,3 +26,19 @@ class MailText:
         self.text = text
         self.subj = subj
         self.title = title
+    def saveToBd(self, cursor):
+        if idNum == '':
+            cursor.execute(
+                "Insert into MailTexte (text,subject,title) VALUES (:text,:subj,:title)",
+                {'text':self.text, 'subj': self.subj, 'title':self.title}
+                )
+        else:
+            idExist = cursor.execute('SELECT * FROM MailTexte WHERE id=?',(idNum))
+            if idExidt:
+                cursor.execute(
+                    "UPDATE MailTexte SET text = :text, subject = :subj, title = :title WHERE id = :id",
+                    {'id':self.idNum,'text':self.text, 'subj': self.subj, 'title':self.title}
+                    )
+            ###
+            
+            

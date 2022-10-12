@@ -95,7 +95,7 @@ class SelectorPage(tk.Frame):
         msg['To']      = dest
         msg.add_header('X-Unsent', '1')
         html = text
-        html = '<font face="Verdana, monospace" size="10">'+ html
+        html = '<strong>'+ html + '</strong>'
         if link:
             html += f'</div><a href = {link}>{link}</a>'
         html += f'Viele Grüße\n{self.controller.configData["Username"]}'
