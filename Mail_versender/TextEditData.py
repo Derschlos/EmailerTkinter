@@ -96,15 +96,26 @@ class TextEditPage(tk.Frame):
         self.savedChanges = True
         subj = self.textSubjEnt.get()
         title= self.textCombo.get()
-        text = self.textField.get('1.0','end')
-        text = text.replace('\n', r'\n')
         for marker, htmlMarkers in self.textMarkers.items():
             ranges = self.textField.tag_ranges(marker)
             if ranges:
                 for i in range(len(ranges),0,-2):
                     self.textField.insert(ranges[i-1],htmlMarkers[1])
                     self.textField.insert(ranges[i-2],htmlMarkers[0])
-        print('saved')
+        text = self.textField.get('1.0','end')
+        text = text.replace('\n', r'\n')
+        self.selectedText.text = text
+        self.selectedText.subj=subj
+        self.selectedText.title=title
+        if self.selectedText.idNum == '':
+            self.controller.texts[title] = self.selectedText
+        self.controller.updateCombos()
+        self.selectedText.saveToDB(self.controller.con)
+        print(selectedText.idNum)
+        self.controller.returnToPrev(self.savedChanges, self.pageName)
+        
+    def resetVals(self):
+        self.selectedText = None
 
     def insertLBoxVals(self):
         for key, vals in self.textBlocks.items():

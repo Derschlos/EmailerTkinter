@@ -26,19 +26,23 @@ class MailText:
         self.text = text
         self.subj = subj
         self.title = title
-    def saveToBd(self, cursor):
-        if idNum == '':
+    def saveToDB(self, connection):
+        cursor = connection.cursor()
+        if self.idNum == '':
             cursor.execute(
                 "Insert into MailTexte (text,subject,title) VALUES (:text,:subj,:title)",
                 {'text':self.text, 'subj': self.subj, 'title':self.title}
                 )
+            idNum = cursor.execute('SELECT MAX(id) from MailTexte')
+            self.idNum = idNum
         else:
-            idExist = cursor.execute('SELECT * FROM MailTexte WHERE id=?',(idNum))
-            if idExidt:
+            idExist = cursor.execute('SELECT * FROM MailTexte WHERE id=?',(str(self.idNum)))
+            if idExist:
                 cursor.execute(
                     "UPDATE MailTexte SET text = :text, subject = :subj, title = :title WHERE id = :id",
                     {'id':self.idNum,'text':self.text, 'subj': self.subj, 'title':self.title}
                     )
+        connection.commit()
             ###
             
             
