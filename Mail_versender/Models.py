@@ -15,7 +15,35 @@ class Kontakt:
         self.dir = directory
         self.person = person
         self.attach = attach
-    
+    def saveToDB(self, connection):
+        cursor = connection.cursor()
+        if self.idNum == '':
+            cursor.execute(
+                "Insert into Kontakte (displayName,mail,textId,directory,personName,attachFiles) VALUES (:displayName,:mail,:textId,:directory,:personName,:attachFiles)",
+                {'displayName':self.display,
+                 'mail': self.mail,
+                 'textId':self.textId,
+                 'directory':self.dir,
+                 'personName':self.person,
+                 'attachFiles':self.attach,}
+                )
+            idNum = cursor.execute('SELECT MAX(id) from Kontakte').fetchone()[0]
+            self.idNum = idNum
+            return idNum
+        else:
+            idExist = cursor.execute('SELECT * FROM Kontakte WHERE id=?',(str(self.idNum)))
+            if idExist:
+                cursor.execute(
+                    "UPDATE Kontakte SET displayName = :displayName, mail = :mail, textId = :textId, directory = :directory, personName = :personName, attachFiles = :attachFiles WHERE id = :id",
+                    {'id':self.idNum,
+                     'displayName':self.display,
+                     'mail': self.mail,
+                     'textId':self.textId,
+                     'directory':self.dir,
+                     'personName':self.person,
+                     'attachFiles':self.attach}
+                    )
+        connection.commit()
     
 class MailText:
     def __init__(self):

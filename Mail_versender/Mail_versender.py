@@ -165,11 +165,11 @@ if __name__ == '__main__':
     configString = '''{"Username": "David Leon Schmidt",
                 "baseColor" : "lightsalmon",
                 "EditPageColor" : "lightsalmon",
-                "EditPageDimensions" : "535x460",
+                "EditPageDimensions" : "535x470",
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "430x200",
                 "TextEditPageColor" : "lightsalmon",
-                "TextEditPageDimensions" : "780x325",
+                "TextEditPageDimensions" : "780x365",
                 "TextBlock": {
                                 "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
                                 "Datei" : ["{file}", "lightblue"],

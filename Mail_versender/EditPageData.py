@@ -29,8 +29,7 @@ class EditPage(tk.Frame):
         self.displayLab = tk.Label(self.kontaktInfoFrame,text = 'Title for this Contact:', bg= self.bg)
         self.personLab = tk.Label(self.kontaktInfoFrame,text = 'Name of the Contact:', bg= self.bg)
         self.mailLab = tk.Label(self.kontaktInfoFrame, text = 'E-Mail Adress of the Contact:', bg= self.bg)
-##        self.displayVar = tk.StringVar()
-##        self.displayEnt = tk.Entry(self.kontaktInfoFrame, textvariable = self.displayVar, width = 50)
+        self.kontaktComb = tk.ttk.Combobox(self.kontaktInfoFrame, textvariable =self.kontaktVar, width = 47)
         self.personVar = tk.StringVar()
         self.personEnt = tk.Entry(self.kontaktInfoFrame, textvariable = self.personVar,width = 50)
         self.mailVar = tk.StringVar()
@@ -48,10 +47,10 @@ class EditPage(tk.Frame):
                                               bg = self.bg)
         self.attachDirCheck.invoke()
         self.attachDirCheck.invoke()
-        self.kontaktComb = tk.ttk.Combobox(self.kontaktInfoFrame, textvariable =self.kontaktVar, width = 47)
+        
         self.kontaktComb['values'] = self.controller.kontChoices
         self.kontaktComb.bind('<<ComboboxSelected>>', self.selectKontakt)
-        self.kontaktLab = tk.Label(self, text = 'Contact:', bg = self.bg)
+
         
 
 
@@ -89,9 +88,9 @@ class EditPage(tk.Frame):
             # Grid:
 
 ##        self.kontaktLab.grid(row = 1,column = 3)
-        self.returnBut.grid(row = 4, column = 1, pady = 5)
+
         
-        self.kontaktInfoFrame.grid(row = 1, column = 1, columnspan= 4)
+        self.kontaktInfoFrame.grid(row = 1, column = 1, columnspan= 4, pady = 5)
         #(
         self.displayLab.grid(row = 1, column = 1, sticky = 'w')
         self.kontaktComb.grid(row = 1,column = 2)
@@ -117,15 +116,10 @@ class EditPage(tk.Frame):
         #
         
         self.saveChangesBut.grid(row = 4, column = 3, columnspan = 2)
+        self.returnBut.grid(row = 4, column = 1, pady = 5)
 
         
-
-##        username = 'David'
-##        
-##        a = self.controller.cur.execute("SELECT * FROM Kontakte WHERE displayName =  :displayName " ,{'displayName': "David Rechnung"})
-##        a = self.controller.cur.execute("SELECT * FROM Kontakte WHERE displayName =  ? ", ["David Rechnung"]
-##        print(a.fetchall())
-##                                        
+        
     
     def onRaise(self):
         self.controller.root.title('Edit Contacts')
@@ -139,6 +133,7 @@ class EditPage(tk.Frame):
     def saveChanges(self):
         print('saved')
         self.savedChanges = True
+##        self.
         self.controller.showFrame('SelectorPage')
         
     def selectKontakt(self, selectionEvent):

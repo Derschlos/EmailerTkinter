@@ -25,10 +25,10 @@ class TextEditPage(tk.Frame):
         self.textMarkers = self.controller.configVars['TextMarkers']
 
         self.returnBut = tk.Button(self, command = lambda:self.controller.returnToPrev(self.savedChanges, self.pageName), text = 'Return')
+        self.saveBut = tk.Button(self, command = self.saveChanges, text = 'Save Changes', state='disabled')
         
             # Select Frame for combo and Title
         self.selectFrame = tk.Frame(self, bg=self.bg)
-        self.saveBut = tk.Button(self.selectFrame, command = self.saveChanges, text = 'Save Changes', state='disabled')
         self.textCombo= tk.ttk.Combobox(self.selectFrame, textvariable =self.textTitleVar, width = 49)
         self.textCombo['values'] = self.textChoices
         self.textCombo.bind('<<ComboboxSelected>>', self.displayText)
@@ -45,7 +45,7 @@ class TextEditPage(tk.Frame):
         self.textField['xscrollcommand'] = self.textXScroll.set
 
             # tags for editing Text
-        self.tagFrame = tk.Frame(self.textFrame, bg = self.bg)
+        self.tagFrame = tk.Frame(self, bg = self.bg)
         self.textBoldBut = tk.Button(self.tagFrame, text = 'B', font =boldFont, command =lambda:self.tagger('bold'))
         self.textItalBut = tk.Button(self.tagFrame, text = 'I', font =italicFont, command =lambda:self.tagger('italic'))
         self.textUnderBut = tk.Button(self.tagFrame, text = 'U', font =underlinedFont, command =lambda:self.tagger('underlined'))
@@ -65,25 +65,27 @@ class TextEditPage(tk.Frame):
 
 
             # Grid Config        
-        self.returnBut.grid(row = 1, column = 1, padx = 5, pady =5)
+        
         #
-        self.selectFrame.grid(row = 1, column =3, padx = 5, columnspan = 3)
+        self.selectFrame.grid(row = 1, column =1, padx = 5, columnspan = 3, sticky = 'w')
         self.textComboLab.grid(row = 1, column = 1)
-        self.textCombo.grid(row = 1, column = 2, pady = 5, sticky = 'we', padx = 10 )
+        self.textCombo.grid(row = 1, column = 2, pady = 5, sticky = 'we', padx = 10, columnspan = 2 )
         self.textSubjLab.grid(row = 2, column = 1)
-        self.textSubjEnt.grid(row = 2, column = 2,columnspan =1, sticky = 'we', padx = 10 )
-        self.saveBut.grid(row = 1,column=3, padx = 50, pady =0, rowspan = 2,columnspan = 2)
+        self.textSubjEnt.grid(row = 2, column = 2,columnspan =2, sticky = 'we', padx = 10, )
         #
         self.textFrame.grid(row = 2, column = 1, columnspan = 3, padx = 5, pady =5)
         self.textField.grid(row =1, column = 1, rowspan = 15)
         self.textYScroll.grid(row = 1, column = 2, sticky = 'ns',rowspan = 16)
         self.textXScroll.grid(row = 16, column = 1, sticky = 'we')
-        self.textLBox.grid(row = 2, column= 3, sticky = 'ns', padx = 5,rowspan = 15)
+        self.textLBox.grid(row = 1, column= 3, sticky = 'ns', padx = 5,rowspan = 16)
         #
-        self.tagFrame.grid(row = 1, column= 3)
+        self.tagFrame.grid(row = 4, column= 2, sticky = 'we')
         self.textBoldBut.grid(row = 1, column= 1, padx = 1)
         self.textItalBut.grid(row = 1, column= 2, padx = 1)
         self.textUnderBut.grid(row = 1, column= 3, padx = 1)
+        
+        self.returnBut.grid(row = 4, column = 1, padx = 5, pady =5, sticky = 'w')
+        self.saveBut.grid(row = 4,column=3, padx =10, sticky = 'e')
 
     def onRaise(self):
         '''Generic FrameFunktion to adjust the Window Configs'''
