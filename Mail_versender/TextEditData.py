@@ -13,7 +13,8 @@ class TextEditPage(tk.Frame):
         self.bg = self.controller.configVars['TextEditPageColor']
         self.textBlocks =self.controller.configVars['TextBlock']
         self.selectedText = None
-        
+
+            # Misc Vars
         self.textChoices = self.controller.textChoices
         self.textIdByTitle = self.controller.textIdByTitle
         self.textSubjVar = tk.StringVar()
@@ -21,54 +22,54 @@ class TextEditPage(tk.Frame):
         boldFont=tk.font.Font(family = 'Verdana', weight = 'bold', size = 9) 				
         italicFont = tk.font.Font(family = 'Verdana', size = 9, slant = 'italic')
         underlinedFont = tk.font.Font(family = 'Verdana', size = 9, underline = 1)
-        self.textMarkers = {'bold':['<b>','</b>'],'italic': ['<i>','</i>'],'underlined':['<u>','</u>']}
+        self.textMarkers = self.controller.configVars['TextMarkers']
 
-
+        self.returnBut = tk.Button(self, command = lambda:self.controller.returnToPrev(self.savedChanges, self.pageName), text = 'Return')
+        
+            # Select Frame for combo and Title
         self.selectFrame = tk.Frame(self, bg=self.bg)
+        self.saveBut = tk.Button(self.selectFrame, command = self.saveChanges, text = 'Save Changes', state='disabled')
         self.textCombo= tk.ttk.Combobox(self.selectFrame, textvariable =self.textTitleVar, width = 49)
         self.textCombo['values'] = self.textChoices
         self.textCombo.bind('<<ComboboxSelected>>', self.displayText)
         self.textComboLab= tk.Label(self.selectFrame, text = 'Title:', bg = self.bg)
         self.textSubjLab = tk.Label(self.selectFrame, text = 'Subject', bg = self.bg)
         self.textSubjEnt = tk.Entry(self.selectFrame, textvariable = self.textSubjVar, width = 49)
-        self.saveBut = tk.Button(self.selectFrame, command = self.saveChanges, text = 'Save Changes', state='disabled')
-##        self.spacerLab = tk.Label(self.selectFrame, text = '', bg = self.bg, width = 10)
 
-
-        self.returnBut = tk.Button(self, command = lambda:self.controller.returnToPrev(self.savedChanges, self.pageName), text = 'Return')
-        
+            # Main Text Frame
         self.textFrame = tk.Frame(self, bg=self.bg)
         self.textField = tk.Text(self.textFrame, width = 70, height = 15, wrap = 'none', font = tk.font.Font(family = 'Verdana', size = 10))
         self.textYScroll = tk.ttk.Scrollbar(self.textFrame, orient="vertical", command= self.textField.yview)
         self.textXScroll = tk.ttk.Scrollbar(self.textFrame, orient='horizontal', command= self.textField.xview)
         self.textField['yscrollcommand'] = self.textYScroll.set
         self.textField['xscrollcommand'] = self.textXScroll.set
-        
+
+            # tags for editing Text
         self.tagFrame = tk.Frame(self.textFrame, bg = self.bg)
         self.textBoldBut = tk.Button(self.tagFrame, text = 'B', font =boldFont, command =lambda:self.tagger('bold'))
         self.textItalBut = tk.Button(self.tagFrame, text = 'I', font =italicFont, command =lambda:self.tagger('italic'))
         self.textUnderBut = tk.Button(self.tagFrame, text = 'U', font =underlinedFont, command =lambda:self.tagger('underlined'))
 
-        self.textLBoxChoices = [] #list(self.controller.configVars['TextBlock'].keys())
+            # Listbox to insert placeholders
+        self.textLBoxChoices = [] 
         self.textLBoxVar = tk.StringVar(value=self.textLBoxChoices)
         self.textLBox = tk.Listbox(self.textFrame, listvariable = self.textLBoxVar, width = 30)
         self.textLBox.bind('<Double-Button-1>', self.insertTextBlock)
         self.insertLBoxVals()
 
-        
+            # text Tags
         self.textField.tag_configure("bold",font=boldFont)
         self.textField.tag_configure("italic",font=italicFont)
         self.textField.tag_configure("underlined",font=underlinedFont)
 
 
 
-                
+            # Grid Config        
         self.returnBut.grid(row = 1, column = 1, padx = 5, pady =5)
         #
         self.selectFrame.grid(row = 1, column =3, padx = 5, columnspan = 3)
         self.textComboLab.grid(row = 1, column = 1)
         self.textCombo.grid(row = 1, column = 2, pady = 5, sticky = 'we', padx = 10 )
-##        self.spacerLab.grid(row = 1, column = 8)
         self.textSubjLab.grid(row = 2, column = 1)
         self.textSubjEnt.grid(row = 2, column = 2,columnspan =1, sticky = 'we', padx = 10 )
         self.saveBut.grid(row = 1,column=3, padx = 50, pady =0, rowspan = 2,columnspan = 2)
@@ -85,6 +86,7 @@ class TextEditPage(tk.Frame):
         self.textUnderBut.grid(row = 1, column= 3, padx = 1)
 
     def onRaise(self):
+        '''Generic FrameFunktion to adjust the Window Configs'''
         self.controller.root.title('Edit Texts')
         self.controller.root.geometry(self.controller.configVars['TextEditPageDimensions'])
         self.config(bg = self.controller.configVars['TextEditPageColor'])
@@ -93,29 +95,37 @@ class TextEditPage(tk.Frame):
         pass
 
     def saveChanges(self):
+        '''gets changes, writes to db , then updates all Combos/Values'''
         self.savedChanges = True
         subj = self.textSubjEnt.get()
         title= self.textCombo.get()
-        for marker, htmlMarkers in self.textMarkers.items():
+        for marker, htmlMarkers in self.textMarkers.items():  #replaces Tags with the correct html to display the Tags
             ranges = self.textField.tag_ranges(marker)
             if ranges:
                 for i in range(len(ranges),0,-2):
                     self.textField.insert(ranges[i-1],htmlMarkers[1])
                     self.textField.insert(ranges[i-2],htmlMarkers[0])
         text = self.textField.get('1.0','end')
-        text = text.replace('\n', r'\n')
+        text = text.replace('\n', r'\n') #compresses the text to one line
         self.selectedText.text = text
         self.selectedText.subj=subj
         self.selectedText.title=title
-        if self.selectedText.idNum == '':
-            self.controller.texts[title] = self.selectedText
-        self.controller.updateCombos()
-        self.selectedText.saveToDB(self.controller.con)
-        print(selectedText.idNum)
+        newIdNum = self.selectedText.saveToDB(self.controller.con) #write to db, returns id if new text
+        if newIdNum:
+            self.controller.texts[self.selectedText.idNum] = self.selectedText
+        self.controller.updateCombos()          # Update display Vals
+        self.textChoices = self.controller.textChoices
+        self.textCombo['values'] = self.textChoices
+        self.textIdByTitle = self.controller.textIdByTitle
+        self.resetVals()
         self.controller.returnToPrev(self.savedChanges, self.pageName)
         
     def resetVals(self):
         self.selectedText = None
+        self.textField.delete('1.0','end')
+        self.textSubjEnt.delete(0,'end')
+        self.textCombo.set('')
+        self.saveBut['state']= 'disabled'
 
     def insertLBoxVals(self):
         for key, vals in self.textBlocks.items():
@@ -133,6 +143,7 @@ class TextEditPage(tk.Frame):
         
 
     def displayText(self, event):
+        '''sets a textModel as selected Text, replaces HTML with the  tags, then writes to the TextField'''
         self.textField.delete('1.0', 'end')
         self.saveBut['state'] = 'normal'
         self.selectedText = self.textCombo.get()
@@ -166,9 +177,9 @@ class TextEditPage(tk.Frame):
                     endChar = f'{search}+{countVar.get()}c'
                     self.textField.tag_add(title, search, endChar)
                     start = endChar
-##                self.textField.tag_config(key, background = vals[1])
-            
+
     def tagger(self, tagName):
+        '''adds a tag of tagName to the selected text'''
         current_tags=self.textField.tag_names("sel.first")
         if f"{tagName}" in current_tags:
             self.textField.tag_remove(f"{tagName}","sel.first","sel.last")
@@ -176,43 +187,7 @@ class TextEditPage(tk.Frame):
             self.textField.tag_add(f"{tagName}","sel.first","sel.last")
 
 
-
     
-##    def bolder(self):
-####        if not self.textField.sel:
-####            return
-##        current_tags=self.textField.tag_names("sel.first")
-##        if "bold" in current_tags:
-##            self.textField.tag_remove("bold","sel.first","sel.last")#my_text,my_text.cget
-##        else:
-##            self.textField.tag_add("bold","sel.first","sel.last")
-##
-##    def italicer(self):
-##        current_tags=self.textField.tag_names("sel.first")
-##        if "italic" in current_tags:
-##            self.textField.tag_remove("italic","sel.first","sel.last")#my_text,my_text.cget
-##        else:
-##            self.textField.tag_add("italic","sel.first","sel.last")
-####        print(self.textField.tag_ranges('bold'))
-####        a = self.textField.tag_ranges('bold')
-####        print(self.textField.get('1.0'))
-####        print(self.textField.count('1.0',a[0]))
-####        b =self.textField.count('1.0',a[0])
-####        print(self.textField.get('1.0', 'end')[:b[0]])
-####        
-####        print(self.textField.index('end'))
-##
-####
-
-
-
-
-
-
-
-
-
-
 
 
 

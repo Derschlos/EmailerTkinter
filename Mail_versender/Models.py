@@ -6,13 +6,15 @@ class Kontakt:
         self.textId = ''
         self.dir = ''
         self.person = ''
-    def fill(self, idNum, display, mail, textId, directory, person):
+        self.attach = 0
+    def fill(self, idNum, display, mail, textId, directory, person, attach):
         self.idNum = idNum
         self.display = display
         self.mail =mail
         self.textId = textId
         self.dir = directory
         self.person = person
+        self.attach = attach
     
     
 class MailText:
@@ -33,8 +35,9 @@ class MailText:
                 "Insert into MailTexte (text,subject,title) VALUES (:text,:subj,:title)",
                 {'text':self.text, 'subj': self.subj, 'title':self.title}
                 )
-            idNum = cursor.execute('SELECT MAX(id) from MailTexte')
+            idNum = cursor.execute('SELECT MAX(id) from MailTexte').fetchone()[0]
             self.idNum = idNum
+            return idNum
         else:
             idExist = cursor.execute('SELECT * FROM MailTexte WHERE id=?',(str(self.idNum)))
             if idExist:

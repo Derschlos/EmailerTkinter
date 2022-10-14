@@ -1,7 +1,7 @@
 {"Username": "David Leon Schmidt",
                 "baseColor" : "lightsalmon",
                 "EditPageColor" : "lightsalmon",
-                "EditPageDimensions" : "475x450",
+                "EditPageDimensions" : "535x465",
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "430x200",
                 "TextEditPageColor" : "lightsalmon",
@@ -10,5 +10,10 @@
                                 "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
                                 "Datei" : ["{file}", "lightblue"],
                                 "Link" : ["{link}", "lightyellow"]
-                            }
+                            },
+                "TextMarkers": {
+                                "bold":["<b>","</b>"],
+                                "italic": ["<i>","</i>"],
+                                "underlined":["<u>","</u>"]
+                                }
                         }

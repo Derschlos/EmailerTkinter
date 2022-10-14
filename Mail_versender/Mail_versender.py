@@ -139,9 +139,9 @@ class basedesk:
     def initReadDB(self, cur):
         existingData = self.cur.execute('SELECT * FROM Kontakte')
         for data in existingData:
-            idNum, display, mail, textOptions, directory, person = data
+            idNum, display, mail, textOptions, directory, person, attach = data
             kontakt =Kontakt()
-            kontakt.fill(idNum, display, mail, textOptions, directory, person)
+            kontakt.fill(idNum, display, mail, textOptions, directory, person, attach)
             self.kontakte[display] = kontakt
         texts = self.cur.execute('SELECT * FROM MailTexte')
         for data in texts:
@@ -155,7 +155,7 @@ class basedesk:
         self.kontChoices.append('<New Contact>')
         self.textChoices = [text.title for idNum,text in self.texts.items()]
         self.textChoices.append('<New Text>')
-        self.textIdByTitle = {text.title:idNum for idNum, text in self.texts.items()}
+        self.textIdByTitle = {textMod.title:idNum for idNum, textMod in self.texts.items()}
 
         
 
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     configString = '''{"Username": "David Leon Schmidt",
                 "baseColor" : "lightsalmon",
                 "EditPageColor" : "lightsalmon",
-                "EditPageDimensions" : "475x450",
+                "EditPageDimensions" : "535x460",
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "430x200",
                 "TextEditPageColor" : "lightsalmon",
@@ -174,7 +174,12 @@ if __name__ == '__main__':
                                 "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
                                 "Datei" : ["{file}", "lightblue"],
                                 "Link" : ["{link}", "lightyellow"]
-                            }
+                            },
+                "TextMarkers": {
+                                "bold":["<b>","</b>"],
+                                "italic": ["<i>","</i>"],
+                                "underlined":["<u>","</u>"]
+                                },  
                         }'''
     if os.path.isfile(configFile):
         with open(configFile, 'r') as f:
