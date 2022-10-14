@@ -95,10 +95,12 @@ class SelectorPage(tk.Frame):
         msg['To']      = dest
         msg.add_header('X-Unsent', '1')
         html = text
+        html = '<strong>'+ html + '</strong>'
         if link:
             html += f'</div><a href = {link}>{link}</a>'
         html += f'Viele Grüße\n{self.controller.configData["Username"]}'
         html = html.replace('\n','<div>&nbsp;</div>')
+        tml = html +'</font>'
         part = MIMEText(html, 'html')
         msg.attach(part)
         if files:
