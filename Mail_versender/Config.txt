@@ -3,7 +3,7 @@
                 "EditPageColor" : "lightsalmon",
                 "EditPageDimensions" : "535x470",
                 "CreateMailColor": "lightsalmon",
-                "CreateMailDimensions" : "430x200",
+                "CreateMailDimensions" : "535x380",
                 "TextEditPageColor" : "lightsalmon",
                 "TextEditPageDimensions" : "780x365",
                 "TextBlock": {

@@ -94,13 +94,25 @@ class TextEditPage(tk.Frame):
         self.config(bg = self.controller.configVars['TextEditPageColor'])
     
     def update(self, *args):
-        pass
+        for arg in args:
+            if type(arg) == str:
+                self.textCombo.set(arg)
+                self.displayText('event')
+            elif type(arg) == Kontakt:
+                self.textCombo.set(self.controller.texts[arg.textId].title)
+                self.displayText('event')
 
     def saveChanges(self):
-        '''gets changes, writes to db , then updates all Combos/Values'''
-        self.savedChanges = True
+        '''gets changes, writes to db , then updates all Combos/Values''' 
         subj = self.textSubjEnt.get()
         title= self.textCombo.get()
+        if title == '<New Text>':
+            messagebox.showwarning(message='Please edit the Title')
+            return 
+        for existingTitle in self.textChoices:
+            if title == existingTitle and self.selectedText.idNum != self.controller.texts[self.textIdByTitle[existingTitle]].idNum:
+                messagebox.showwarning(message='Title already used')
+                return
         for marker, htmlMarkers in self.textMarkers.items():  #replaces Tags with the correct html to display the Tags
             ranges = self.textField.tag_ranges(marker)
             if ranges:
@@ -119,11 +131,11 @@ class TextEditPage(tk.Frame):
         self.textChoices = self.controller.textChoices
         self.textCombo['values'] = self.textChoices
         self.textIdByTitle = self.controller.textIdByTitle
-        self.resetVals()
+        self.savedChanges = True
         self.controller.returnToPrev(self.savedChanges, self.pageName)
+        self.resetVals()
         
     def resetVals(self):
-        self.selectedText = None
         self.textField.delete('1.0','end')
         self.textSubjEnt.delete(0,'end')
         self.textCombo.set('')
@@ -146,6 +158,7 @@ class TextEditPage(tk.Frame):
 
     def displayText(self, event):
         '''sets a textModel as selected Text, replaces HTML with the  tags, then writes to the TextField'''
+        self.savedChanges = False
         self.textField.delete('1.0', 'end')
         self.saveBut['state'] = 'normal'
         self.selectedText = self.textCombo.get()
@@ -179,6 +192,7 @@ class TextEditPage(tk.Frame):
                     endChar = f'{search}+{countVar.get()}c'
                     self.textField.tag_add(title, search, endChar)
                     start = endChar
+        self.controller.frames['EditPage'].update(self.selectedText)
 
     def tagger(self, tagName):
         '''adds a tag of tagName to the selected text'''

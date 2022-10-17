@@ -127,14 +127,72 @@ class EditPage(tk.Frame):
         self.bg= self.controller.configVars['EditPageColor']
         self.config(bg = self.bg)
 
-    def update(self, textId,*args):
-        pass
+    def update(self,*args):
+        self.kontaktComb['values'] = self.controller.kontChoices
+        self.textCombo['values'] = self.controller.textChoices
+        for arg in args:
+            if type(arg)== MailText:
+                self.textCombo.set(arg.title)
+                self.displayText('event')
+            elif type(arg) == Kontakt:
+                self.kontaktComb.set(arg.display)
+                self.selectKontakt('event')
+
+
+    def resetVals(self):
+        self.kontaktComb.set('')
+        self.personVar.set('')
+        self.mailVar.set('')
+        self.attachDirCheck.deselect()
+        self.attachDirEnt.configure(state = self.attachDirVar.get())
+        self.dirVar.set('')
+        self.attachFilesCheck.deselect()
+        self.textCombo.set('')
+        self.subjVar.set('')
+        self.textField['state']='normal'
+        self.textField.delete('1.0','end')
+        self.textField['state']='disabled'
+        self.textCombo['state']='disabled'
+        self.editTextBut['state']='disabled'
+        
     
     def saveChanges(self):
-        print('saved')
+        display = self.kontaktComb.get()
+        mail = self.mailVar.get()
+        if display == '<New Contact>':
+            messagebox.showwarning(message='Please edit the Title')
+            return
+        try:
+            textId = self.controller.textIdByTitle[self.textCombo.get()]
+        except:
+            messagebox.showwarning(message='No text selected?')
+            return
+        directory = self.dirVar.get()
+        nameOfPerson = self.personVar.get()
+        attach = self.attachFilesVar.get()
+        for idNum, kontakt in self.controller.kontakts.items():
+            if display == kontakt.display and self.curKontakt.idNum != kontakt.idNum:
+                messagebox.showwarning(message='Title already used')
+                return
+        self.curKontakt.fill(self.curKontakt.idNum, display, mail, textId, directory, nameOfPerson, attach )
+        if not self.curKontakt.idNum:
+            try:
+                
+                newIdNum = self.curKontakt.saveToDB(self.controller.con)
+                self.curKontakt.idNum = newIdNum
+                self.controller.kontakts[display] = self.curKontakt
+            except Exception as e:
+                print(e)
+                messagebox.showwarning(message='Could not write to DB, try again later')
+                return
+        else:
+            self.curKontakt.saveToDB(self.controller.con)
+        self.controller.updateCombos()
+        self.kontaktComb['values'] = self.controller.kontChoices
+        self.textCombo['values'] = self.controller.textChoices
         self.savedChanges = True
-##        self.
-        self.controller.showFrame('SelectorPage')
+        self.resetVals()
+        self.controller.returnToPrev(self.savedChanges, self.pageName)
         
     def selectKontakt(self, selectionEvent):
         self.savedChanges= False
@@ -142,7 +200,7 @@ class EditPage(tk.Frame):
         self.textCombo['state'] = 'normal'
         self.editTextBut['state'] = 'normal'
         if kontaktName != '<New Contact>':   
-            self.curKontakt = self.controller.kontakte[kontaktName]
+            self.curKontakt = self.controller.kontakts[kontaktName]
             self.curText = self.controller.texts[self.curKontakt.textId]
             self.textCombo.set(self.curText.title)
         else:
@@ -157,7 +215,6 @@ class EditPage(tk.Frame):
             self.attachDirCheck.deselect()
             self.attachDirEnt.configure(state = self.attachDirVar.get())
             self.dirVar.set('')
-##        self.displayVar.set(self.curKontakt.display)
         self.personVar.set(self.curKontakt.person)
         self.mailVar.set(self.curKontakt.mail)
             
@@ -190,7 +247,8 @@ class EditPage(tk.Frame):
     
     def editText(self):
         self.controller.setLastFrame(self.pageName)
+        self.controller.frames['TextEditPage'].update(self.textTitleVar.get())
         self.controller.showFrame('TextEditPage')
-        pass
+
         
     

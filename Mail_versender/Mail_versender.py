@@ -90,7 +90,7 @@ class basedesk:
         self.baseContainer.grid_rowconfigure(0, weight = 1)
         self.baseContainer.grid_columnconfigure(0, weight = 1)
         self.lastFrame =''
-        self.kontakte = {}
+        self.kontakts = {}
         self.texts = {}
         self.kontChoices = []
         self.textChoices = []
@@ -131,9 +131,12 @@ class basedesk:
                 self.frames[pageName].saveChanges()
             else:
                 self.savedChanges = True
+        self.frames[pageName].resetVals()
         if self.frames[self.lastFrame].pageName==pageName:
             self.showFrame('SelectorPage')
             return
+        if pageName == 'TextEditPage' and self.lastFrame == 'EditPage':
+            self.frames['EditPage'].update(self.frames['TextEditPage'].selectedText)
         self.showFrame(self.lastFrame)
         
     def initReadDB(self, cur):
@@ -142,7 +145,7 @@ class basedesk:
             idNum, display, mail, textOptions, directory, person, attach = data
             kontakt =Kontakt()
             kontakt.fill(idNum, display, mail, textOptions, directory, person, attach)
-            self.kontakte[display] = kontakt
+            self.kontakts[display] = kontakt
         texts = self.cur.execute('SELECT * FROM MailTexte')
         for data in texts:
             idNum,text,subj, title = data
@@ -151,7 +154,7 @@ class basedesk:
             self.texts[idNum] = textModel
 
     def updateCombos(self):
-        self.kontChoices = list(self.kontakte.keys())
+        self.kontChoices = list(self.kontakts.keys())
         self.kontChoices.append('<New Contact>')
         self.textChoices = [text.title for idNum,text in self.texts.items()]
         self.textChoices.append('<New Text>')

@@ -29,13 +29,14 @@ class Kontakt:
                 )
             idNum = cursor.execute('SELECT MAX(id) from Kontakte').fetchone()[0]
             self.idNum = idNum
+            connection.commit()
             return idNum
         else:
-            idExist = cursor.execute('SELECT * FROM Kontakte WHERE id=?',(str(self.idNum)))
+            idExist = cursor.execute('SELECT * FROM Kontakte WHERE id=:id',{'id':str(self.idNum)})
             if idExist:
                 cursor.execute(
                     "UPDATE Kontakte SET displayName = :displayName, mail = :mail, textId = :textId, directory = :directory, personName = :personName, attachFiles = :attachFiles WHERE id = :id",
-                    {'id':self.idNum,
+                    {'id':str(self.idNum),
                      'displayName':self.display,
                      'mail': self.mail,
                      'textId':self.textId,
@@ -43,7 +44,7 @@ class Kontakt:
                      'personName':self.person,
                      'attachFiles':self.attach}
                     )
-        connection.commit()
+                connection.commit()
     
 class MailText:
     def __init__(self):
@@ -65,13 +66,14 @@ class MailText:
                 )
             idNum = cursor.execute('SELECT MAX(id) from MailTexte').fetchone()[0]
             self.idNum = idNum
+            connection.commit()
             return idNum
         else:
-            idExist = cursor.execute('SELECT * FROM MailTexte WHERE id=?',(str(self.idNum)))
+            idExist = cursor.execute('SELECT * FROM MailTexte WHERE id=:id',{'id':str(self.idNum)})
             if idExist:
                 cursor.execute(
                     "UPDATE MailTexte SET text = :text, subject = :subj, title = :title WHERE id = :id",
-                    {'id':self.idNum,'text':self.text, 'subj': self.subj, 'title':self.title}
+                    {'id':str(self.idNum),'text':self.text, 'subj': self.subj, 'title':self.title}
                     )
         connection.commit()
             ###
