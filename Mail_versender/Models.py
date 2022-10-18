@@ -45,6 +45,11 @@ class Kontakt:
                      'attachFiles':self.attach}
                     )
                 connection.commit()
+    def delete(self, connection):
+        cursor = connection.cursor()
+        if self.idNum:
+            cursor.execute("DELETE FROM Kontakte WHERE id= :id",{"id": str(self.idNum)})
+        connection.commit()
     
 class MailText:
     def __init__(self):
@@ -77,5 +82,9 @@ class MailText:
                     )
         connection.commit()
             ###
-            
+    def delete(self, connection):
+        cursor = connection.cursor()
+        if self.idNum:
+            cursor.execute("DELETE FROM MailTexte WHERE id=:id",{"id": str(self.idNum)})
+        connection.commit()       
             

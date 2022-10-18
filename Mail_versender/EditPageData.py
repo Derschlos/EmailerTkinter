@@ -50,7 +50,7 @@ class EditPage(tk.Frame):
         
         self.kontaktComb['values'] = self.controller.kontChoices
         self.kontaktComb.bind('<<ComboboxSelected>>', self.selectKontakt)
-
+        self.deleteKontaktBut = tk.Button(self.kontaktInfoFrame, text = "Delete Contact", command = self.deleteKont, state = 'disabled')
         
 
 
@@ -102,6 +102,7 @@ class EditPage(tk.Frame):
         self.attachDirCheck.grid(row = 4, column = 1, sticky = 'w')
         self.attachDirEnt.grid(row=4, column = 2)
         self.attachFilesCheck.grid(row =5, column = 1, sticky = 'w')
+        self.deleteKontaktBut.grid(row =5, column = 2, sticky = 'e')
         #)
         Separator.grid(row =2, column = 1, columnspan = 4,pady = 15,padx = 5,sticky = ('E','W'))
 
@@ -154,8 +155,78 @@ class EditPage(tk.Frame):
         self.textField['state']='disabled'
         self.textCombo['state']='disabled'
         self.editTextBut['state']='disabled'
+        self.deleteKontaktBut['state']='disabled'
         
+    def selectKontakt(self, selectionEvent):
+        self.savedChanges= False
+        kontaktName= self.kontaktComb.get()
+        self.textCombo['state'] = 'normal'
+        self.deleteKontaktBut['state']='normal'
+        self.editTextBut['state'] = 'normal'
+        if kontaktName != '<New Contact>':   
+            self.curKontakt = self.controller.kontakts[kontaktName]
+            self.curText = self.controller.texts[self.curKontakt.textId]
+            self.textCombo.set(self.curText.title)
+        else:
+            self.curKontakt = Kontakt()
+        
+        self.displayText('event')
+        if self.curKontakt.dir:
+            self.attachDirCheck.select()
+            self.attachDirEnt.configure(state = self.attachDirVar.get())
+            self.dirVar.set(self.curKontakt.dir)
+        else:
+            self.attachDirCheck.deselect()
+            self.attachDirEnt.configure(state = self.attachDirVar.get())
+            self.dirVar.set('')
+        self.attachFilesVar.set(self.curKontakt.attach)
+        self.personVar.set(self.curKontakt.person)
+        self.mailVar.set(self.curKontakt.mail)
+
+    def deleteKont(self):
+        if not self.curKontakt.idNum:
+            return
+        message = messagebox.askyesno(message = 'Are you sure you want to DELETE THIS CONTACT?')
+        if message == True:
+            self.curKontakt.delete(self.controller.con)
+            del self.controller.kontakts[self.curKontakt.display]
+            self.savedChanges = True
+            self.resetVals()
+        else:
+            return
+            
+    def displayText(self, selectionEvent):
+        self.textField['state']='normal'
+        self.textField.delete('1.0', 'end')
+        textName = self.textTitleVar.get()
+        if textName == '':
+            return
+        if textName == '<New Text>':
+            self.editText()
+            return
+        self.curText = self.controller.texts[self.controller.textIdByTitle[textName]]
+        text = self.curText.text.replace(r'\n','\n')
+        self.textField.insert('1.0',text)
+        for marker, htmlMarkers in self.textMarkers.items():
+            timesFound= len(re.findall(htmlMarkers[0], text))
+            startAt = 'end'
+            if timesFound:
+                for i in range(timesFound):
+                    endTag=self.textField.search(htmlMarkers[1], startAt, backwards= True)
+                    startTag = self.textField.search(htmlMarkers[0], startAt, backwards= True)
+                    self.textField.delete(endTag, f'{endTag}+{len(htmlMarkers[0])+1}c')
+                    self.textField.delete(startTag, f'{startTag}+{len(htmlMarkers[1])-1}c')
+                    endTag = endTag.split('.')
+                    endTag = f'{endTag[0]}.{int(endTag[1])-len(htmlMarkers[0])}'
+                    self.textField.tag_add(marker, startTag, endTag)
+        self.textField['state']='disabled'
+        self.subjVar.set(self.curText.subj)
     
+    def editText(self):
+        self.controller.setLastFrame(self.pageName)
+        self.controller.frames['TextEditPage'].update(self.textTitleVar.get())
+        self.controller.showFrame('TextEditPage')
+
     def saveChanges(self):
         display = self.kontaktComb.get()
         mail = self.mailVar.get()
@@ -193,62 +264,5 @@ class EditPage(tk.Frame):
         self.savedChanges = True
         self.resetVals()
         self.controller.returnToPrev(self.savedChanges, self.pageName)
-        
-    def selectKontakt(self, selectionEvent):
-        self.savedChanges= False
-        kontaktName= self.kontaktComb.get()
-        self.textCombo['state'] = 'normal'
-        self.editTextBut['state'] = 'normal'
-        if kontaktName != '<New Contact>':   
-            self.curKontakt = self.controller.kontakts[kontaktName]
-            self.curText = self.controller.texts[self.curKontakt.textId]
-            self.textCombo.set(self.curText.title)
-        else:
-            self.curKontakt = Kontakt()
-        
-        self.displayText('event')
-        if self.curKontakt.dir:
-            self.attachDirCheck.select()
-            self.attachDirEnt.configure(state = self.attachDirVar.get())
-            self.dirVar.set(self.curKontakt.dir)
-        else:
-            self.attachDirCheck.deselect()
-            self.attachDirEnt.configure(state = self.attachDirVar.get())
-            self.dirVar.set('')
-        self.personVar.set(self.curKontakt.person)
-        self.mailVar.set(self.curKontakt.mail)
-            
-    def displayText(self, selectionEvent):
-        self.textField['state']='normal'
-        self.textField.delete('1.0', 'end')
-        textName = self.textTitleVar.get()
-        if textName == '':
-            return
-        if textName == '<New Text>':
-            self.editText()
-            return
-        self.curText = self.controller.texts[self.controller.textIdByTitle[textName]]
-        text = self.curText.text.replace(r'\n','\n')
-        self.textField.insert('1.0',text)
-        for marker, htmlMarkers in self.textMarkers.items():
-            timesFound= len(re.findall(htmlMarkers[0], text))
-            startAt = 'end'
-            if timesFound:
-                for i in range(timesFound):
-                    endTag=self.textField.search(htmlMarkers[1], startAt, backwards= True)
-                    startTag = self.textField.search(htmlMarkers[0], startAt, backwards= True)
-                    self.textField.delete(endTag, f'{endTag}+{len(htmlMarkers[0])+1}c')
-                    self.textField.delete(startTag, f'{startTag}+{len(htmlMarkers[1])-1}c')
-                    endTag = endTag.split('.')
-                    endTag = f'{endTag[0]}.{int(endTag[1])-len(htmlMarkers[0])}'
-                    self.textField.tag_add(marker, startTag, endTag)
-        self.textField['state']='disabled'
-        self.subjVar.set(self.curText.subj)
-    
-    def editText(self):
-        self.controller.setLastFrame(self.pageName)
-        self.controller.frames['TextEditPage'].update(self.textTitleVar.get())
-        self.controller.showFrame('TextEditPage')
-
         
     

@@ -6,6 +6,7 @@ import json
 from email import generator
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 from shutil import move
 from tkinterdnd2 import DND_FILES, TkinterDnD
 import re
@@ -110,7 +111,8 @@ class SelectorPage(tk.Frame):
             if fileName not in self.filePath.keys():
                 self.filePath[fileName] = file
                 self.fileLBox.insert(tk.END, fileName)
-
+        
+        
 
     def delFile(self):
         selctionIndex = self.fileLBox.curselection()
@@ -118,34 +120,37 @@ class SelectorPage(tk.Frame):
             return
         self.fileLBox.delete(selctionIndex)
 
-    def createMail(self, kontakt)#name, dest, text,subj, files = None, link = None):
+    def createMail(self, kontakt, files):#name, dest, text,subj, files = None, link = None):
         msg = MIMEMultipart()
         textMod = self.controller.texts[kontakt.textId]
-        subj =  textMod.subj
-        text = textMod.text
-        person = kontakt.person
-        link = f'<a href = {kontakt.directory}>{kontakt.directory}</a>'
+        if len(files)>0:
+            file = files[0]
+        else:
+            file = ''
+        selectedPerson = kontakt.person
+        link = f'<a href={kontakt.dir} style="color:{self.controller.configVars["MailConfig"]["LinkColor"]};">{kontakt.dir}</a>'
+        subj =  textMod.subj.format(**locals())
+        text = textMod.text.format(**locals())
+        html = text.replace(r'\n','<div>&nbsp;</div>')
         
-
-##        html = text
-####        html = '<strong>'+ html + '</strong>'
-        html += f'Viele Grüße\n{self.controller.configData["Username"]}'
-        html = html.replace('\n','<div>&nbsp;</div>')
-        tml = html +'</font>'
+        html = f'''<div style="color:{self.controller.configVars["MailConfig"]["TextColor"]};
+                        font-family:{self.controller.configVars["MailConfig"]["Font"]};
+                        font-size:{self.controller.configVars["MailConfig"]["FontSize"]+3};
+                        ">{html}</div>'''
         msg['Subject'] = subj
         msg['To']      = kontakt.mail
         msg.add_header('X-Unsent', '1')
         part = MIMEText(html, 'html')
         msg.attach(part)
         if kontakt.attach:
-            for file in files:
-                with open(file, 'rb') as f:
-                    basename= os.path.basename(f)
-                    part = MIMEApplication(f.read(),Name=basename)
-                part['Content-Disposition'] = 'attachment; filename="%s"' % basename
+            for fi in files:
+                with open(self.filePath[fi], 'rb') as f:
+##                    basename= os.path.basename(fi)
+                    part = MIMEApplication(f.read(),Name=fi)
+                part['Content-Disposition'] = 'attachment; filename="%s"' % fi
                 msg.attach(part)
                 
-        outfile_name = f'{name}.eml'
+        outfile_name = 'test.eml'
         with open(outfile_name, 'w') as outfile:
             gen = generator.Generator(outfile)
             gen.flatten(msg)
@@ -162,32 +167,11 @@ class SelectorPage(tk.Frame):
         self.createMail(selectedKontakt, files)
 ##        adress, directory = self.controller.kontakts[selectedPerson]
 ##        directory = directory.replace('\n','')
-##        outlook = switch.switch('- Outlook')
-##        navigate('rt')
-##        time.sleep(1)
-##        paste(adress)
-##        tab(3)
-##        paste(f'Neue Rechnung mit PE heute: {self.fileLBox.get(0)}')
-##        tab(1)
-##        rechnungstr = []
-##        
-##        paste(f'''Hallo {selectedPerson},
-##
-##anbei ein Link zum Zahllaufordner wg. PE Rechnung {', '.join(files)}:\n\n''')
-##        navigate('rzch1l')
-##        time.sleep(0.1)
-##        paste(directory)
-##        ag.hotkey('enter')
-##        ag.hotkey('enter')
-##        paste('\nViele Grüße\n\nDavid')
-##        navigate('rzcts')
-##        down(3)
-##        ag.hotkey('enter')
-##        for file in self.files:
-##            fname= os.path.split(file)[1]
-##            move(file, f'{directory}\\{fname}')
-##        self.files=[]
-##        self.filePath = {}
-##        self.fileLBox.delete(0, 'end')
-##        os.startfile(directory)
+        
+        for file in files:
+            move(self.filePath[file], f'{selectedKontakt.dir}\\{file}')
+        self.files=[]
+        self.filePath = {}
+        self.fileLBox.delete(0, 'end')
+        os.startfile(selectedKontakt.dir)
 ##

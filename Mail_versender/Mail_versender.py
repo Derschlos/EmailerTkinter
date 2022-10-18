@@ -170,19 +170,26 @@ if __name__ == '__main__':
                 "EditPageColor" : "lightsalmon",
                 "EditPageDimensions" : "535x470",
                 "CreateMailColor": "lightsalmon",
-                "CreateMailDimensions" : "430x200",
+                "CreateMailDimensions" : "520x365",
                 "TextEditPageColor" : "lightsalmon",
                 "TextEditPageDimensions" : "780x365",
                 "TextBlock": {
                                 "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
                                 "Datei" : ["{file}", "lightblue"],
+                                "Alle Datein" : ["{files}", "indian red"], 
                                 "Link" : ["{link}", "lightyellow"]
                             },
                 "TextMarkers": {
                                 "bold":["<b>","</b>"],
                                 "italic": ["<i>","</i>"],
                                 "underlined":["<u>","</u>"]
-                                },  
+                                },
+                "MailConfig":{
+                                "LinkColor": "DodgerBlue",
+                                "TextColor": "DarkBlue",
+                                "Font":"Verdana",
+                                "FontSize":10
+                                }
                         }'''
     if os.path.isfile(configFile):
         with open(configFile, 'r') as f:

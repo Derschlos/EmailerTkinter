@@ -35,7 +35,8 @@ class TextEditPage(tk.Frame):
         self.textComboLab= tk.Label(self.selectFrame, text = 'Title:', bg = self.bg)
         self.textSubjLab = tk.Label(self.selectFrame, text = 'Subject', bg = self.bg)
         self.textSubjEnt = tk.Entry(self.selectFrame, textvariable = self.textSubjVar, width = 49)
-
+        self.deleteTextBut = tk.Button(self.selectFrame, text = "Delete text", command = self.deleteText, state= 'disabled')
+        
             # Main Text Frame
         self.textFrame = tk.Frame(self, bg=self.bg)
         self.textField = tk.Text(self.textFrame, width = 70, height = 15, wrap = 'none', font = tk.font.Font(family = 'Verdana', size = 10))
@@ -72,6 +73,7 @@ class TextEditPage(tk.Frame):
         self.textCombo.grid(row = 1, column = 2, pady = 5, sticky = 'we', padx = 10, columnspan = 2 )
         self.textSubjLab.grid(row = 2, column = 1)
         self.textSubjEnt.grid(row = 2, column = 2,columnspan =2, sticky = 'we', padx = 10, )
+        self.deleteTextBut.grid(row = 1, column = 4, pady = 5, sticky = 'e',rowspan = 2, padx =130 )
         #
         self.textFrame.grid(row = 2, column = 1, columnspan = 3, padx = 5, pady =5)
         self.textField.grid(row =1, column = 1, rowspan = 15)
@@ -101,6 +103,9 @@ class TextEditPage(tk.Frame):
             elif type(arg) == Kontakt:
                 self.textCombo.set(self.controller.texts[arg.textId].title)
                 self.displayText('event')
+
+    
+        
 
     def saveChanges(self):
         '''gets changes, writes to db , then updates all Combos/Values''' 
@@ -140,6 +145,7 @@ class TextEditPage(tk.Frame):
         self.textSubjEnt.delete(0,'end')
         self.textCombo.set('')
         self.saveBut['state']= 'disabled'
+        self.deleteTextBut['state'] = 'disabled'
 
     def insertLBoxVals(self):
         for key, vals in self.textBlocks.items():
@@ -161,6 +167,7 @@ class TextEditPage(tk.Frame):
         self.savedChanges = False
         self.textField.delete('1.0', 'end')
         self.saveBut['state'] = 'normal'
+        self.deleteTextBut['state'] = 'normal'
         self.selectedText = self.textCombo.get()
         if self.selectedText== '<New Text>':
             self.selectedText = MailText()
@@ -202,7 +209,21 @@ class TextEditPage(tk.Frame):
         else:
             self.textField.tag_add(f"{tagName}","sel.first","sel.last")
 
-
+    def deleteText(self):
+        message = messagebox.askyesno(message = 'Are you sure you want to DELETE THIS TEXT?')
+        if message == True:
+            self.selectedText.delete(self.controller.con)
+            del self.controller.texts[self.selectedText.idNum]
+            self.savedChanges = True
+            self.resetVals()
+            self.controller.updateCombos()          # Update display Vals
+            self.textChoices = self.controller.textChoices
+            self.textCombo['values'] = self.textChoices
+            self.textIdByTitle = self.controller.textIdByTitle
+            self.controller.frames['EditPage'].resetVals()
+            self.controller.frames['EditPage'].textCombo['values'] = self.controller.textChoices
+        else:
+            return
     
 
 
