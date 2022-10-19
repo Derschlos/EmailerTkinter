@@ -1,5 +1,4 @@
 import tkinter as tk
-import time
 import os
 import sqlite3
 import json
@@ -54,7 +53,7 @@ class SelectorPage(tk.Frame):
         self.editTextsBut.grid(row=1, column=2, padx= 2)
         #
         self.startBut.grid(row=2, column=2, sticky = 'e')
-        
+        self.sentMail=0
 
     def onRaise(self):
         self.controller.root.title('Create E-Mail')
@@ -128,6 +127,8 @@ class SelectorPage(tk.Frame):
         else:
             file = ''
         selectedPerson = kontakt.person
+        addInfo = kontakt.addInfo
+        allFiles= ', '.join(files)
         link = f'<a href={kontakt.dir} style="color:{self.controller.configVars["MailConfig"]["LinkColor"]};">{kontakt.dir}</a>'
         subj =  textMod.subj.format(**locals())
         text = textMod.text.format(**locals())
@@ -150,10 +151,12 @@ class SelectorPage(tk.Frame):
                 part['Content-Disposition'] = 'attachment; filename="%s"' % fi
                 msg.attach(part)
                 
-        outfile_name = 'test.eml'
+        outfile_name = f'NewMail{self.sentMail}.eml'
         with open(outfile_name, 'w') as outfile:
             gen = generator.Generator(outfile)
             gen.flatten(msg)
+        os.startfile(f'NewMail{self.sentMail}.eml')
+        self.sentMail +=1
 
             
 ##        

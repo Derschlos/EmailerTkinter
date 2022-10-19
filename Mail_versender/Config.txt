@@ -1,16 +1,17 @@
 {"Username": "David Leon Schmidt",
                 "baseColor" : "lightsalmon",
                 "EditPageColor" : "lightsalmon",
-                "EditPageDimensions" : "535x470",
+                "EditPageDimensions" : "535x490",
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "520x365",
                 "TextEditPageColor" : "lightsalmon",
                 "TextEditPageDimensions" : "780x365",
                 "TextBlock": {
-                                "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
-                                "Datei" : ["{file}", "lightblue"],
-                                "Alle Datein" : ["{files}", "indian red"], 
-                                "Link" : ["{link}", "lightyellow"]
+                                "Contact person": ["{selectedPerson}", "lightgreen"],
+                                "File" : ["{file}", "lightblue"],
+                                "All Files" : ["{allFiles}", "indian red"], 
+                                "Link" : ["{link}", "lightyellow"],
+                                "Additional Info": ["{addInfo}", "lightgreen"]
                             },
                 "TextMarkers": {
                                 "bold":["<b>","</b>"],
@@ -18,9 +19,9 @@
                                 "underlined":["<u>","</u>"]
                                 },
                 "MailConfig":{
-					        "LinkColor": "DodgerBlue",
-                                "TextColor": "DarkBlue",
+                                "LinkColor": "DodgerBlue",
+                                "TextColor": "MidnightBlue",
                                 "Font":"Verdana",
                                 "FontSize":10
-                              }
+                                }
                         }

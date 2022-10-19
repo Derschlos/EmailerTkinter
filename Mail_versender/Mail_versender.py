@@ -1,23 +1,15 @@
 # -*- coding: utf-8 -*-
 
 
-#pyinstaller Kontoauszugversender.py -D -w --collect-all tkinterdnd2 --noconfirm
+#pyinstaller Mail_versender.py -D -w --collect-all tkinterdnd2 --noconfirm
 import tkinter as tk
 import pyautogui as ag
-import pyperclip
-import time
-import win32gui
 import os
 import sqlite3
 import json
 from tkinter import messagebox
 from Models import Kontakt, MailText
-from email import generator
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from shutil import move
 from tkinterdnd2 import DND_FILES, TkinterDnD
-import switch
 from SelectorPageData import SelectorPage
 from EditPageData import EditPage
 from TextEditData import TextEditPage
@@ -37,17 +29,19 @@ def setupDB():
 	"id"	INTEGER NOT NULL UNIQUE,
 	"displayName"	TEXT NOT NULL,
 	"mail"	TEXT NOT NULL,
-	"textId"	TEXT NOT NULL,
-	"ordner"	TEXT,
+	"textId"	INTEGER NOT NULL,
+	"directory"	TEXT,
 	"personName"	TEXT NOT NULL,
+	"attachFiles"	INTEGER,
+	"addInfo"       TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
         )"""
     textTableCreate= """CREATE TABLE "MailTexte" (
-                "id"	INTEGER NOT NULL UNIQUE,
-                "text"	TEXT NOT NULL,
-                "subject"	TEXT NOT NULL,
-                "title"	TEXT,
-                PRIMARY KEY("id" AUTOINCREMENT)
+	"id"	INTEGER NOT NULL UNIQUE,
+	"text"	TEXT NOT NULL,
+	"subject"	TEXT NOT NULL,
+	"title"	TEXT,
+	PRIMARY KEY("id" AUTOINCREMENT)
         )"""
     cur.execute(kontaktTableCreate)
     cur.execute(textTableCreate)
@@ -142,9 +136,9 @@ class basedesk:
     def initReadDB(self, cur):
         existingData = self.cur.execute('SELECT * FROM Kontakte')
         for data in existingData:
-            idNum, display, mail, textOptions, directory, person, attach = data
+            idNum, display, mail, textOptions, directory, person, attach, addInfo = data
             kontakt =Kontakt()
-            kontakt.fill(idNum, display, mail, textOptions, directory, person, attach)
+            kontakt.fill(idNum, display, mail, textOptions, directory, person, attach, addInfo)
             self.kontakts[display] = kontakt
         texts = self.cur.execute('SELECT * FROM MailTexte')
         for data in texts:
@@ -168,16 +162,17 @@ if __name__ == '__main__':
     configString = '''{"Username": "David Leon Schmidt",
                 "baseColor" : "lightsalmon",
                 "EditPageColor" : "lightsalmon",
-                "EditPageDimensions" : "535x470",
+                "EditPageDimensions" : "535x490",
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "520x365",
                 "TextEditPageColor" : "lightsalmon",
                 "TextEditPageDimensions" : "780x365",
                 "TextBlock": {
-                                "Ansprechpartner": ["{selectedPerson}", "lightgreen"],
-                                "Datei" : ["{file}", "lightblue"],
-                                "Alle Datein" : ["{files}", "indian red"], 
-                                "Link" : ["{link}", "lightyellow"]
+                                "Contact person": ["{selectedPerson}", "lightgreen"],
+                                "File" : ["{file}", "lightblue"],
+                                "All Files" : ["{allFiles}", "indian red"], 
+                                "Link" : ["{link}", "lightyellow"],
+                                "Additional Info": ["{addInfo}", "lightgreen"]
                             },
                 "TextMarkers": {
                                 "bold":["<b>","</b>"],
@@ -186,7 +181,7 @@ if __name__ == '__main__':
                                 },
                 "MailConfig":{
                                 "LinkColor": "DodgerBlue",
-                                "TextColor": "DarkBlue",
+                                "TextColor": "MidnightBlue",
                                 "Font":"Verdana",
                                 "FontSize":10
                                 }

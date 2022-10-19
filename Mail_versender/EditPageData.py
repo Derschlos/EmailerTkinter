@@ -29,11 +29,14 @@ class EditPage(tk.Frame):
         self.displayLab = tk.Label(self.kontaktInfoFrame,text = 'Title for this Contact:', bg= self.bg)
         self.personLab = tk.Label(self.kontaktInfoFrame,text = 'Name of the Contact:', bg= self.bg)
         self.mailLab = tk.Label(self.kontaktInfoFrame, text = 'E-Mail Adress of the Contact:', bg= self.bg)
+        self.addInfoLab = tk.Label(self.kontaktInfoFrame, text = 'Additional Info:', bg= self.bg)
         self.kontaktComb = tk.ttk.Combobox(self.kontaktInfoFrame, textvariable =self.kontaktVar, width = 47)
         self.personVar = tk.StringVar()
         self.personEnt = tk.Entry(self.kontaktInfoFrame, textvariable = self.personVar,width = 50)
         self.mailVar = tk.StringVar()
         self.mailEnt = tk.Entry(self.kontaktInfoFrame, textvariable = self.mailVar,width = 50)
+        self.addInfoVar = tk.StringVar()
+        self.addInfoEnt = tk.Entry(self.kontaktInfoFrame, textvariable = self.addInfoVar,width = 50)
         self.attachFilesVar = tk.BooleanVar()
         self.attachFilesCheck = tk.Checkbutton(self.kontaktInfoFrame,text ='Attach files to mail', variable = self.attachFilesVar, bg = self.bg)
         self.dirVar = tk.StringVar()
@@ -99,10 +102,12 @@ class EditPage(tk.Frame):
         self.personEnt.grid(row = 2, column = 2)
         self.mailLab.grid(row = 3, column = 1, sticky = 'w')
         self.mailEnt.grid(row = 3, column = 2)
-        self.attachDirCheck.grid(row = 4, column = 1, sticky = 'w')
-        self.attachDirEnt.grid(row=4, column = 2)
-        self.attachFilesCheck.grid(row =5, column = 1, sticky = 'w')
-        self.deleteKontaktBut.grid(row =5, column = 2, sticky = 'e')
+        self.addInfoLab.grid(row = 4, column = 1, sticky = 'w')
+        self.addInfoEnt.grid(row = 4, column = 2)
+        self.attachDirCheck.grid(row = 5, column = 1, sticky = 'w')
+        self.attachDirEnt.grid(row=5, column = 2)
+        self.attachFilesCheck.grid(row =6, column = 1, sticky = 'w')
+        self.deleteKontaktBut.grid(row =6, column = 2, sticky = 'e')
         #)
         Separator.grid(row =2, column = 1, columnspan = 4,pady = 15,padx = 5,sticky = ('E','W'))
 
@@ -147,6 +152,7 @@ class EditPage(tk.Frame):
         self.attachDirCheck.deselect()
         self.attachDirEnt.configure(state = self.attachDirVar.get())
         self.dirVar.set('')
+        self.addInfoVar.set('')
         self.attachFilesCheck.deselect()
         self.textCombo.set('')
         self.subjVar.set('')
@@ -182,6 +188,7 @@ class EditPage(tk.Frame):
         self.attachFilesVar.set(self.curKontakt.attach)
         self.personVar.set(self.curKontakt.person)
         self.mailVar.set(self.curKontakt.mail)
+        self.addInfoVar.set(self.curKontakt.addInfo)
 
     def deleteKont(self):
         if not self.curKontakt.idNum:
@@ -241,11 +248,12 @@ class EditPage(tk.Frame):
         directory = self.dirVar.get()
         nameOfPerson = self.personVar.get()
         attach = self.attachFilesVar.get()
+        addInfo = self.addInfoVar.get()
         for idNum, kontakt in self.controller.kontakts.items():
             if display == kontakt.display and self.curKontakt.idNum != kontakt.idNum:
                 messagebox.showwarning(message='Title already used')
                 return
-        self.curKontakt.fill(self.curKontakt.idNum, display, mail, textId, directory, nameOfPerson, attach )
+        self.curKontakt.fill(self.curKontakt.idNum, display, mail, textId, directory, nameOfPerson, attach, addInfo )
         if not self.curKontakt.idNum:
             try:
                 

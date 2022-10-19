@@ -137,6 +137,7 @@ class TextEditPage(tk.Frame):
         self.textCombo['values'] = self.textChoices
         self.textIdByTitle = self.controller.textIdByTitle
         self.savedChanges = True
+        self.controller.frames['EditPage'].textCombo['values'] = self.controller.textChoices
         self.controller.returnToPrev(self.savedChanges, self.pageName)
         self.resetVals()
         
