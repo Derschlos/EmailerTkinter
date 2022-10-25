@@ -114,10 +114,16 @@ class SelectorPage(tk.Frame):
         
 
     def delFile(self):
-        selctionIndex = self.fileLBox.curselection()
-        if len(selctionIndex) != 1:
+        selectionIndex = self.fileLBox.curselection()
+        if len(selectionIndex) != 1:
             return
-        self.fileLBox.delete(selctionIndex)
+        selectionName = self.fileLBox.get(selectionIndex)
+        fileIndex = self.files.index(self.filePath[selectionName])
+        self.fileLBox.delete(selectionIndex)
+        self.filePath.pop(selectionName)
+        self.files.pop(fileIndex)
+        print(self.files)
+        print(self.filePath)
 
     def createMail(self, kontakt, files):#name, dest, text,subj, files = None, link = None):
         msg = MIMEMultipart()
@@ -140,6 +146,7 @@ class SelectorPage(tk.Frame):
                         ">{html}</div>'''
         msg['Subject'] = subj
         msg['To']      = kontakt.mail
+        msg['Cc']      = kontakt.cc
         msg.add_header('X-Unsent', '1')
         part = MIMEText(html, 'html')
         msg.attach(part)

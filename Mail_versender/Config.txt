@@ -1,7 +1,7 @@
 {"Username": "David Leon Schmidt",
                 "baseColor" : "lightsalmon",
                 "EditPageColor" : "lightsalmon",
-                "EditPageDimensions" : "535x490",
+                "EditPageDimensions" : "535x520",
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "520x365",
                 "TextEditPageColor" : "lightsalmon",
@@ -20,7 +20,7 @@
                                 },
                 "MailConfig":{
                                 "LinkColor": "DodgerBlue",
-                                "TextColor": "MidnightBlue",
+                                "TextColor": "#002367",
                                 "Font":"Verdana",
                                 "FontSize":10
                                 }

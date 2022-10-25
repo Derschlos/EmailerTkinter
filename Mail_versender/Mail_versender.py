@@ -34,6 +34,7 @@ def setupDB():
 	"personName"	TEXT NOT NULL,
 	"attachFiles"	INTEGER,
 	"addInfo"       TEXT,
+	"cc"            TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
         )"""
     textTableCreate= """CREATE TABLE "MailTexte" (
@@ -136,9 +137,9 @@ class basedesk:
     def initReadDB(self, cur):
         existingData = self.cur.execute('SELECT * FROM Kontakte')
         for data in existingData:
-            idNum, display, mail, textOptions, directory, person, attach, addInfo = data
+            idNum, display, mail, textOptions, directory, person, attach, addInfo, cc = data
             kontakt =Kontakt()
-            kontakt.fill(idNum, display, mail, textOptions, directory, person, attach, addInfo)
+            kontakt.fill(idNum, display, mail, textOptions, directory, person, attach, addInfo,cc)
             self.kontakts[display] = kontakt
         texts = self.cur.execute('SELECT * FROM MailTexte')
         for data in texts:
@@ -162,7 +163,7 @@ if __name__ == '__main__':
     configString = '''{"Username": "David Leon Schmidt",
                 "baseColor" : "lightsalmon",
                 "EditPageColor" : "lightsalmon",
-                "EditPageDimensions" : "535x490",
+                "EditPageDimensions" : "535x520",
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "520x365",
                 "TextEditPageColor" : "lightsalmon",
@@ -181,11 +182,12 @@ if __name__ == '__main__':
                                 },
                 "MailConfig":{
                                 "LinkColor": "DodgerBlue",
-                                "TextColor": "MidnightBlue",
+                                "TextColor": "#002367",
                                 "Font":"Verdana",
                                 "FontSize":10
                                 }
                         }'''
+    #textcolor "MidnightBlue",
     if os.path.isfile(configFile):
         with open(configFile, 'r') as f:
             configString = f.read()

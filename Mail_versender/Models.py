@@ -8,7 +8,8 @@ class Kontakt:
         self.person = ''
         self.attach = 0
         self.addInfo = ''
-    def fill(self, idNum, display, mail, textId, directory, person, attach,addInfo):
+        self.cc = ""
+    def fill(self, idNum, display, mail, textId, directory, person, attach,addInfo,cc):
         self.idNum = idNum
         self.display = display
         self.mail =mail
@@ -17,18 +18,20 @@ class Kontakt:
         self.person = person
         self.attach = attach
         self.addInfo = addInfo
+        self.cc = cc
     def saveToDB(self, connection):
         cursor = connection.cursor()
         if self.idNum == '':
             cursor.execute(
-                "Insert into Kontakte (displayName,mail,textId,directory,personName,attachFiles,addInfo) VALUES (:displayName,:mail,:textId,:directory,:personName,:attachFiles,:addInfo)",
+                "Insert into Kontakte (displayName,mail,textId,directory,personName,attachFiles,addInfo, cc) VALUES (:displayName,:mail,:textId,:directory,:personName,:attachFiles,:addInfo,:cc)",
                 {'displayName':self.display,
                  'mail': self.mail,
                  'textId':self.textId,
                  'directory':self.dir,
                  'personName':self.person,
                  'attachFiles':self.attach,
-                 'addInfo':self.addInfo}
+                 'addInfo':self.addInfo,
+                 'cc':self.cc}
                 )
             idNum = cursor.execute('SELECT MAX(id) from Kontakte').fetchone()[0]
             self.idNum = idNum
@@ -38,7 +41,7 @@ class Kontakt:
             idExist = cursor.execute('SELECT * FROM Kontakte WHERE id=:id',{'id':str(self.idNum)})
             if idExist:
                 cursor.execute(
-                    "UPDATE Kontakte SET displayName = :displayName, mail = :mail, textId = :textId, directory = :directory, personName = :personName, attachFiles = :attachFiles, addInfo = :addInfo WHERE id = :id",
+                    "UPDATE Kontakte SET displayName = :displayName, mail = :mail, textId = :textId, directory = :directory, personName = :personName, attachFiles = :attachFiles, addInfo = :addInfo, cc = :cc WHERE id = :id",
                     {'id':str(self.idNum),
                      'displayName':self.display,
                      'mail': self.mail,
@@ -46,7 +49,8 @@ class Kontakt:
                      'directory':self.dir,
                      'personName':self.person,
                      'attachFiles':self.attach,
-                     'addInfo':self.addInfo}
+                     'addInfo':self.addInfo,
+                     'cc' : self.cc}
                     )
                 connection.commit()
     def delete(self, connection):
