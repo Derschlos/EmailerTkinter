@@ -29,6 +29,14 @@ class SelectorPage(tk.Frame):
         self.kontaktLBox.bind('<Double-Button-1>',lambda e:self.editKontakts())
         self.kontaktYScroll = tk.ttk.Scrollbar(self.kontaktFrame, orient="vertical", command= self.kontaktLBox.yview)
         self.kontaktLBox['yscrollcommand'] = self.kontaktYScroll.set
+        #
+        self.kontaktTree = tk.ttk.Treeview(self.kontaktFrame, show='tree', height = 15)
+        self.kontaktTree.column('#0', width = 300)
+        self.insertTree()
+##        self.tree.tag_configure('base', background=self.configVars['FolderColor'], font = self.font)
+##        self.tree.tag_bind('prog','<Double-1>', lambda e:self.editKontakts())
+##        self.kontaktTree.tag_bind('text','<Double-1>', lambda e:print(self.kontaktTree.focus()))
+        #
         self.startBut= tk.Button(self, text = 'Create mail + move files', command = self.mail)
         self.drop_target_register(DND_FILES)
         
@@ -44,8 +52,9 @@ class SelectorPage(tk.Frame):
 
         #
         self.kontaktFrame.grid(row=1,column=1, pady = 5, padx = 5 )
-        self.kontaktLBox.grid(row=1,column=1,)
+##        self.kontaktLBox.grid(row=1,column=1,)
         self.kontaktYScroll.grid(row = 1, column = 2, sticky = 'ns')
+        self.kontaktTree.grid(row=1,column=1,sticky = 'ns')
         #
         self.fileLBox.grid(row=1, column=2, )
         #
@@ -112,7 +121,15 @@ class SelectorPage(tk.Frame):
                 self.filePath[fileName] = file
                 self.fileLBox.insert(tk.END, fileName)
         
-        
+    def insertTree(self):
+        for textId in self.controller.texts:
+            if textId not in self.kontaktTree.get_children():
+                textMod = self.controller.texts[textId]
+                self.kontaktTree.insert('', 'end', textId, text = textMod.title ,tags= 'text')
+        for idNum in self.kontaktTree.get_children():
+            kontakte = [kontaktMod for title, kontaktMod in self.controller.kontakts if kontaktMod.textId == idNum]
+            print(kontakte)
+##        print(self.kontaktTree.get_children(1))
 
     def delFile(self):
         selectionIndex = self.fileLBox.curselection()
@@ -123,6 +140,7 @@ class SelectorPage(tk.Frame):
         self.fileLBox.delete(selectionIndex)
         self.filePath.pop(selectionName)
         self.files.pop(fileIndex)
+        print(self.controller.textIdByTitle)
 
     def createMail(self, kontakt, files):#name, dest, text,subj, files = None, link = None):
         msg = MIMEMultipart()
