@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import tkinter as tk
 import os
 import sqlite3
@@ -122,8 +123,6 @@ class SelectorPage(tk.Frame):
         self.fileLBox.delete(selectionIndex)
         self.filePath.pop(selectionName)
         self.files.pop(fileIndex)
-        print(self.files)
-        print(self.filePath)
 
     def createMail(self, kontakt, files):#name, dest, text,subj, files = None, link = None):
         msg = MIMEMultipart()
@@ -178,10 +177,12 @@ class SelectorPage(tk.Frame):
 ##        adress, directory = self.controller.kontakts[selectedPerson]
 ##        directory = directory.replace('\n','')
         
-        for file in files:
-            move(self.filePath[file], f'{selectedKontakt.dir}\\{file}')
+        if selectedKontakt.dir:
+            for file in files:
+                move(self.filePath[file], f'{selectedKontakt.dir}\\{file}')
+            os.sStartfile(selectedKontakt.dir)
         self.files=[]
         self.filePath = {}
         self.fileLBox.delete(0, 'end')
-        os.startfile(selectedKontakt.dir)
+            
 ##
