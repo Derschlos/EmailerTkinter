@@ -165,7 +165,11 @@ if __name__ == '__main__':
                 "EditPageColor" : "lightsalmon",
                 "EditPageDimensions" : "535x520",
                 "CreateMailColor": "lightsalmon",
-                "CreateMailDimensions" : "520x365",
+                "CreateMailDimensions" : "587x365",
+                "TreeColors": {
+                                "Text":"sea green",
+                                "Kontakt":"paleturquoise"
+                                },
                 "TextEditPageColor" : "lightsalmon",
                 "TextEditPageDimensions" : "780x365",
                 "TextBlock": {

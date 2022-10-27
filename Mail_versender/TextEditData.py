@@ -100,8 +100,8 @@ class TextEditPage(tk.Frame):
             if type(arg) == str:
                 self.textCombo.set(arg)
                 self.displayText('event')
-            elif type(arg) == Kontakt:
-                self.textCombo.set(self.controller.texts[arg.textId].title)
+            elif type(arg) == MailText:
+                self.textCombo.set(arg.title)
                 self.displayText('event')
 
     

@@ -23,19 +23,16 @@ class SelectorPage(tk.Frame):
         self.bg = self.controller.configVars['CreateMailColor']
         
         self.kontaktFrame = tk.Frame(self, bg = self.bg)
-        self.kontChoices = list(self.controller.kontakts.keys())
-        self.kontaktVar = tk.StringVar(value=self.kontChoices)
-        self.kontaktLBox = tk.Listbox(self.kontaktFrame, listvariable = self.kontaktVar, height = 20, width =  30)
-        self.kontaktLBox.bind('<Double-Button-1>',lambda e:self.editKontakts())
-        self.kontaktYScroll = tk.ttk.Scrollbar(self.kontaktFrame, orient="vertical", command= self.kontaktLBox.yview)
-        self.kontaktLBox['yscrollcommand'] = self.kontaktYScroll.set
-        #
-        self.kontaktTree = tk.ttk.Treeview(self.kontaktFrame, show='tree', height = 15)
-        self.kontaktTree.column('#0', width = 300)
+        self.kontChoices = list(self.controller.kontakts.keys())        
+        self.kontaktTree = tk.ttk.Treeview(self.kontaktFrame, show='tree', height = 16)
+        self.kontaktTree.column('#0', width = 250)
         self.insertTree()
-##        self.tree.tag_configure('base', background=self.configVars['FolderColor'], font = self.font)
-##        self.tree.tag_bind('prog','<Double-1>', lambda e:self.editKontakts())
-##        self.kontaktTree.tag_bind('text','<Double-1>', lambda e:print(self.kontaktTree.focus()))
+        self.kontaktYScroll = tk.ttk.Scrollbar(self.kontaktFrame, orient="vertical", command= self.kontaktTree.yview)
+        self.kontaktTree['yscrollcommand'] = self.kontaktYScroll.set
+        self.kontaktTree.tag_configure('text', background=self.controller.configVars["TreeColors"]["Text"])
+        self.kontaktTree.tag_configure('kontakt', background=self.controller.configVars["TreeColors"]["Kontakt"])
+        self.kontaktTree.tag_bind('text','<Double-1>', lambda e:self.editSelection('TextEditPage'))
+        self.kontaktTree.tag_bind('kontakt','<Double-1>', lambda e:self.editSelection('EditPage'))
         #
         self.startBut= tk.Button(self, text = 'Create mail + move files', command = self.mail)
         self.drop_target_register(DND_FILES)
@@ -47,16 +44,15 @@ class SelectorPage(tk.Frame):
         self.fileLBox = tk.Listbox(self, listvariable = self.fileVar,width = 50, height = 20)
         self.fileLBox.bind('<Double-Button-1>',lambda e:self.delFile())
         self.editFrame = tk.Frame(self, bg = self.bg)
-        self.editKontaktsBut = tk.Button(self.editFrame, text = 'Edit Contacts', command = self.editKontakts)
-        self.editTextsBut = tk.Button(self.editFrame, text = 'Edit Texts', command = self.editTexts)
+        self.editKontaktsBut = tk.Button(self.editFrame, text = 'Edit Contacts', command = lambda: self.editSelection('EditPage'))
+        self.editTextsBut = tk.Button(self.editFrame, text = 'Edit Texts', command = lambda:self.editSelection('TextEditPage'))
 
         #
         self.kontaktFrame.grid(row=1,column=1, pady = 5, padx = 5 )
-##        self.kontaktLBox.grid(row=1,column=1,)
         self.kontaktYScroll.grid(row = 1, column = 2, sticky = 'ns')
         self.kontaktTree.grid(row=1,column=1,sticky = 'ns')
         #
-        self.fileLBox.grid(row=1, column=2, )
+        self.fileLBox.grid(row=1, column=2,  pady = 5,)
         #
         self.editFrame.grid(row=2, column=1, sticky = 'w', padx =5)
         self.editKontaktsBut.grid(row=1, column=1,)
@@ -69,32 +65,33 @@ class SelectorPage(tk.Frame):
         self.controller.root.title('Create E-Mail')
         self.controller.root.config()
         self.controller.root.geometry(self.controller.configVars['CreateMailDimensions'])
-        self.kontChoices = list(self.controller.kontakts.keys())
-        self.kontaktVar.set(self.kontChoices)
         self.config(bg = self.bg)
+        self.insertTree()
          
     def update(self, *args):
-        pass
-
-    def editKontakts(self):
-        selctionIndex = self.kontaktLBox.curselection()
-        if len(selctionIndex) == 1:
-            selectedKontakt = self.kontaktLBox.get(selctionIndex[0])
-            kontakt = self.controller.kontakts[selectedKontakt]
-            self.controller.frames['EditPage'].update(kontakt)
-        self.controller.showFrame('EditPage')
-        self.controller.setLastFrame(self.pageName)
+        pass     
             
-    def editTexts(self):
-        selctionIndex = self.kontaktLBox.curselection()
-        if len(selctionIndex) == 1:
-            selectedKontakt = self.kontaktLBox.get(selctionIndex[0])
-            kontakt = self.controller.kontakts[selectedKontakt]
-            self.controller.frames['TextEditPage'].update(kontakt)
-        self.controller.showFrame('TextEditPage')
+   
+    def editSelection(self, toPage):
+        selectedText = None
+        selectedKontakt = None
+        selection = self.kontaktTree.focus()
         self.controller.setLastFrame(self.pageName)
+        self.controller.showFrame(toPage)
+        try:
+            selectedText = self.controller.texts[int(selection)]
+        except:
+            try:
+                selectedKontakt = self.controller.kontakts[selection]
+            except:
+                pass
+        if selectedKontakt:
+            self.controller.frames['EditPage'].update(self.controller.kontakts[selection])
+        if selectedText:
+            self.controller.frames['TextEditPage'].update(selectedText)
 
         
+
     def cleanFiles(self, data):
         isolatedSpaces = []
         data = data.split('}')
@@ -123,13 +120,14 @@ class SelectorPage(tk.Frame):
         
     def insertTree(self):
         for textId in self.controller.texts:
-            if textId not in self.kontaktTree.get_children():
+            if str(textId) not in self.kontaktTree.get_children(''):
                 textMod = self.controller.texts[textId]
                 self.kontaktTree.insert('', 'end', textId, text = textMod.title ,tags= 'text')
         for idNum in self.kontaktTree.get_children():
-            kontakte = [kontaktMod for title, kontaktMod in self.controller.kontakts if kontaktMod.textId == idNum]
-            print(kontakte)
-##        print(self.kontaktTree.get_children(1))
+            kontakte = [kontaktMod for title, kontaktMod in self.controller.kontakts.items() if int(kontaktMod.textId) == int(idNum)]
+            for kontaktMod in kontakte:
+                if str(kontaktMod.display) not in self.kontaktTree.get_children(idNum):
+                    self.kontaktTree.insert(idNum, 'end', kontaktMod.display, text = kontaktMod.display, tags = 'kontakt')
 
     def delFile(self):
         selectionIndex = self.fileLBox.curselection()
@@ -140,7 +138,6 @@ class SelectorPage(tk.Frame):
         self.fileLBox.delete(selectionIndex)
         self.filePath.pop(selectionName)
         self.files.pop(fileIndex)
-        print(self.controller.textIdByTitle)
 
     def createMail(self, kontakt, files):#name, dest, text,subj, files = None, link = None):
         msg = MIMEMultipart()
@@ -185,11 +182,11 @@ class SelectorPage(tk.Frame):
             
 ##        
     def mail(self):
-        selctionIndex = self.kontaktLBox.curselection()
-        if len(selctionIndex) != 1:
+        selection = self.kontaktTree.focus()
+        try:
+            selectedKontakt = self.controller.kontakts[selection]
+        except:
             return
-        selectedKontakt = self.kontaktLBox.get(selctionIndex[0])
-        selectedKontakt = self.controller.kontakts[selectedKontakt]
         files = [os.path.split(f)[1] for f in self.files]
         self.createMail(selectedKontakt, files)
 ##        adress, directory = self.controller.kontakts[selectedPerson]
@@ -198,7 +195,7 @@ class SelectorPage(tk.Frame):
         if selectedKontakt.dir:
             for file in files:
                 move(self.filePath[file], f'{selectedKontakt.dir}\\{file}')
-            os.sStartfile(selectedKontakt.dir)
+            os.startfile(selectedKontakt.dir)
         self.files=[]
         self.filePath = {}
         self.fileLBox.delete(0, 'end')

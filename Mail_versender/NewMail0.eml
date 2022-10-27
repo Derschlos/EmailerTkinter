@@ -1,0 +1,17 @@
+Content-Type: multipart/mixed; boundary="===============8173516816760876632=="
+MIME-Version: 1.0
+Subject: aaa
+To: d.schmidt@menschingplus.de; Info@menschingplus.de
+Cc: kpk@ls.com
+X-Unsent: 1
+
+--===============8173516816760876632==
+Content-Type: text/html; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+<div style="color:#002367;
+                        font-family:Verdana;
+                        font-size:13;
+                        ">aaaaa<div>&nbsp;</div><div>&nbsp;</div></div>
+--===============8173516816760876632==--
