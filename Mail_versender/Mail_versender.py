@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
-#pyinstaller Mail_versender.py -D -w --collect-all tkinterdnd2 --noconfirm
 import tkinter as tk
 import pyautogui as ag
 import os
