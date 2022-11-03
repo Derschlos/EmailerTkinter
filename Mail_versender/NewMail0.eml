@@ -1,17 +1,22 @@
-Content-Type: multipart/mixed; boundary="===============8173516816760876632=="
+Content-Type: multipart/mixed; boundary="===============4741135523482423214=="
 MIME-Version: 1.0
-Subject: aaa
-To: d.schmidt@menschingplus.de; Info@menschingplus.de
-Cc: kpk@ls.com
+Subject: Rechung hier
+To: asdf
+Cc: sadf
 X-Unsent: 1
 
---===============8173516816760876632==
-Content-Type: text/html; charset="us-ascii"
+--===============4741135523482423214==
+Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 
-<div style="color:#002367;
-                        font-family:Verdana;
-                        font-size:13;
-                        ">aaaaa<div>&nbsp;</div><div>&nbsp;</div></div>
---===============8173516816760876632==--
+PGRpdiBzdHlsZT0iY29sb3I6IzAwMjM2NzsKICAgICAgICAgICAgICAgICAgICAgICAgZm9udC1m
+YW1pbHk6VmVyZGFuYTsKICAgICAgICAgICAgICAgICAgICAgICAgZm9udC1zaXplOjEzOwogICAg
+ICAgICAgICAgICAgICAgICAgICAiPmFzZGFzZGFzZDxkaXY+Jm5ic3A7PC9kaXY+PGEgaHJlZj1c
+XHdzcnZkbXNcb2ZmaWNlXEludGVyblxaYWhsbGF1ZiB1bmQgRWluZ2FuZ3NyZWNobnVuZ2VuXGbD
+vHIgR0YgLSBTY2FuIGVpbmdlaGVuZGUgUmVjaG51bmdlbiB2aWEgUG9zdCBiencuIEUtTWFpbCBz
+dHlsZT0iY29sb3I6RG9kZ2VyQmx1ZTsiPlxcd3NydmRtc1xvZmZpY2VcSW50ZXJuXFphaGxsYXVm
+IHVuZCBFaW5nYW5nc3JlY2hudW5nZW5cZsO8ciBHRiAtIFNjYW4gZWluZ2VoZW5kZSBSZWNobnVu
+Z2VuIHZpYSBQb3N0IGJ6dy4gRS1NYWlsPC9hPjxkaXY+Jm5ic3A7PC9kaXY+PC9kaXY+
+
+--===============4741135523482423214==--

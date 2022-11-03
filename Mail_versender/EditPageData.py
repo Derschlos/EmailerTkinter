@@ -5,7 +5,8 @@ import re
 
 class EditPage(tk.Frame):
     def __init__(self,parent, controller):
-        tk.Frame.__init__(self, parent)
+##        tk.Frame.__init__(self, parent)
+        super().__init__(parent)
         self.pageName = 'EditPage'
         self.controller = controller
         self.savedChanges = True
@@ -14,10 +15,8 @@ class EditPage(tk.Frame):
 
         self.curText = None
         self.subjVar = tk.StringVar()
-        self.textTitleVar = tk.StringVar()
-##        self.controller.textChoices = self.controller.textChoices        
+        self.textTitleVar = tk.StringVar()      
         self.curKontakt = None
-##        self.controller.kontChoices = self.controller.kontChoices
         self.kontaktVar = tk.StringVar()
         
    
@@ -60,11 +59,6 @@ class EditPage(tk.Frame):
         
 
 
-##        self.sendMailFrame =tk.Frame(self, bg= self.bg)
-##        self.sendMailVar = tk.BooleanVar()
-##        self.Link = tk.Radiobutton(self.sendMailFrame,text ='Send Mail', variable = self.sendMailVar, value=True)
-##        self.noLink = tk.Radiobutton(self.linkFrame,text ='', variable = self.sendMailVar, value=False)
-
         self.textFrame = tk.Frame(self, bg= self.bg)
         self.textCombo = tk.ttk.Combobox(self.textFrame, textvariable =self.textTitleVar, state = 'disabled')
         self.textCombo['values'] = self.controller.textChoices
@@ -91,16 +85,11 @@ class EditPage(tk.Frame):
 
         
 
-            # Grid:
-
-##        self.kontaktLab.grid(row = 1,column = 3)
-
-        
+            # Grid:        
         self.kontaktInfoFrame.grid(row = 1, column = 1, columnspan= 4, pady = 5)
         #(
         self.displayLab.grid(row = 1, column = 1, sticky = 'w')
         self.kontaktComb.grid(row = 1,column = 2)
-##        self.displayEnt.grid(row = 1, column = 2)
         self.personLab.grid(row = 2, column = 1, sticky = 'w')
         self.personEnt.grid(row = 2, column = 2)
         self.mailLab.grid(row = 3, column = 1, sticky = 'w')

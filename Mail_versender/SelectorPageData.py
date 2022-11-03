@@ -17,7 +17,8 @@ datas = collect_data_files('tkinterdnd2')
 
 class SelectorPage(tk.Frame):
     def __init__(self,parent, controller):
-        tk.Frame.__init__(self, parent)
+##        tk.Frame.__init__(self, parent)
+        super().__init__(parent)
         self.pageName = 'SelectorPage'
         self.controller = controller
         self.bg = self.controller.configVars['CreateMailColor']
@@ -149,7 +150,9 @@ class SelectorPage(tk.Frame):
         selectedPerson = kontakt.person
         addInfo = kontakt.addInfo
         allFiles= ', '.join(files)
+        print(1,kontakt.dir)
         link = f'<a href={kontakt.dir} style="color:{self.controller.configVars["MailConfig"]["LinkColor"]};">{kontakt.dir}</a>'
+        print(2,link)
         subj =  textMod.subj.format(**locals())
         text = textMod.text.format(**locals())
         html = text.replace(r'\n','<div>&nbsp;</div>')
@@ -158,11 +161,12 @@ class SelectorPage(tk.Frame):
                         font-family:{self.controller.configVars["MailConfig"]["Font"]};
                         font-size:{self.controller.configVars["MailConfig"]["FontSize"]+3};
                         ">{html}</div>'''
+        print(3,html)
         msg['Subject'] = subj
         msg['To']      = kontakt.mail
         msg['Cc']      = kontakt.cc
         msg.add_header('X-Unsent', '1')
-        part = MIMEText(html, 'html')
+        part = MIMEText(html, 'html', 'utf-8')
         msg.attach(part)
         if kontakt.attach:
             for fi in files:
