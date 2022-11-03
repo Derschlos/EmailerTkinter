@@ -150,9 +150,7 @@ class SelectorPage(tk.Frame):
         selectedPerson = kontakt.person
         addInfo = kontakt.addInfo
         allFiles= ', '.join(files)
-        print(1,kontakt.dir)
-        link = f'<a href={kontakt.dir} style="color:{self.controller.configVars["MailConfig"]["LinkColor"]};">{kontakt.dir}</a>'
-        print(2,link)
+        link = f'<a href="{kontakt.dir}" style="color:{self.controller.configVars["MailConfig"]["LinkColor"]};">{kontakt.dir}</a>'
         subj =  textMod.subj.format(**locals())
         text = textMod.text.format(**locals())
         html = text.replace(r'\n','<div>&nbsp;</div>')
@@ -161,7 +159,6 @@ class SelectorPage(tk.Frame):
                         font-family:{self.controller.configVars["MailConfig"]["Font"]};
                         font-size:{self.controller.configVars["MailConfig"]["FontSize"]+3};
                         ">{html}</div>'''
-        print(3,html)
         msg['Subject'] = subj
         msg['To']      = kontakt.mail
         msg['Cc']      = kontakt.cc
