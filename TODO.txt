@@ -1,0 +1,15 @@
+
+(general) more comments/better readability of code
+
+SelectorPageData:
+(cosmetic) add Labels to communicate DnD and doubleclick functions to user.
+
+
+EditPageData:
+(structural) find a way to rename file to ContactEditData.
+(structural) find a way to group or sort titles in the spinner to prevent having to search when a lot of Contacts are present.
+
+
+TextEditData:
+(code) prevent "bug" where two linebreaks transform into two blank lines
+(cosmetic) add labels to communicate functions to user
