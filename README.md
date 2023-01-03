@@ -32,3 +32,4 @@ Link - a Hyperlink to the directory where files will be moved (only when selecte
 Additional Info - any addional Info from the contact (this is a freeform entry to add flexibility)
 
 TODO: (code) prevent "bug" where two linebreaks transform into two blank lines
+TODO: (cosmetic) add labels to communicate functions to user
