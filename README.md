@@ -2,7 +2,7 @@
 A simple Tkinter app to prepare E-Mails from predefined texts and contacts
 
 This was made mainly to learn a multiframe/object oriented Tkinter approach while reducing time spend preparing E-Mails at work.
-Runs with Sqlite3 and is customizable via the Config.txt (created at first run)
+Runs with Sqlite3 and is customizable via the Config.txt (database and config file created at first run)
 
 Mail_versender is the main file and the start of the program. Here the base frame object is defined and the others are loaded.
 
