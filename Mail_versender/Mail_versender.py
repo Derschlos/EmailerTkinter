@@ -9,7 +9,7 @@ from tkinter import messagebox
 from Models import Kontakt, MailText
 from tkinterdnd2 import DND_FILES, TkinterDnD
 from SelectorPageData import SelectorPage
-from EditPageData import EditPage
+from ContactEditPageData import ContactEditPage
 from TextEditData import TextEditPage
 
 import re
@@ -94,7 +94,7 @@ class basedesk:
         self.initReadDB(self.cur)
         self.updateCombos()
         self.frames = {}
-        for f in (SelectorPage,EditPage,TextEditPage):
+        for f in (SelectorPage,ContactEditPage,TextEditPage):
             frame = f(self.baseContainer, self)
             self.frames[frame.pageName] = frame
             frame.grid(row = 0, column = 0, sticky ="nsew")
@@ -128,8 +128,8 @@ class basedesk:
         if self.frames[self.lastFrame].pageName==pageName:
             self.showFrame('SelectorPage')
             return
-        if pageName == 'TextEditPage' and self.lastFrame == 'EditPage':
-            self.frames['EditPage'].update(self.frames['TextEditPage'].selectedText)
+        if pageName == 'TextEditPage' and self.lastFrame == 'ContactEditPage':
+            self.frames['ContactEditPage'].update(self.frames['TextEditPage'].selectedText)
         self.showFrame(self.lastFrame)
         
     def initReadDB(self, cur):
@@ -160,8 +160,8 @@ if __name__ == '__main__':
     configFile= 'Config.txt'
     configString = '''{"Username": "David Leon Schmidt",
                 "baseColor" : "lightsalmon",
-                "EditPageColor" : "lightsalmon",
-                "EditPageDimensions" : "535x520",
+                "ContactEditPageColor" : "lightsalmon",
+                "ContactEditPageDimensions" : "535x520",
                 "CreateMailColor": "lightsalmon",
                 "CreateMailDimensions" : "587x365",
                 "TreeColors": {

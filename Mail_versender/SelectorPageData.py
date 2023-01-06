@@ -33,7 +33,7 @@ class SelectorPage(tk.Frame):
         self.kontaktTree.tag_configure('text', background=self.controller.configVars["TreeColors"]["Text"])
         self.kontaktTree.tag_configure('kontakt', background=self.controller.configVars["TreeColors"]["Kontakt"])
         self.kontaktTree.tag_bind('text','<Double-1>', lambda e:self.editSelection('TextEditPage'))
-        self.kontaktTree.tag_bind('kontakt','<Double-1>', lambda e:self.editSelection('EditPage'))
+        self.kontaktTree.tag_bind('kontakt','<Double-1>', lambda e:self.editSelection('ContactEditPage'))
         #
         self.startBut= tk.Button(self, text = 'Create mail + move files', command = self.mail)
         self.drop_target_register(DND_FILES)
@@ -45,7 +45,7 @@ class SelectorPage(tk.Frame):
         self.fileLBox = tk.Listbox(self, listvariable = self.fileVar,width = 50, height = 20)
         self.fileLBox.bind('<Double-Button-1>',lambda e:self.delFile())
         self.editFrame = tk.Frame(self, bg = self.bg)
-        self.editKontaktsBut = tk.Button(self.editFrame, text = 'Edit Contacts', command = lambda: self.editSelection('EditPage'))
+        self.editKontaktsBut = tk.Button(self.editFrame, text = 'Edit Contacts', command = lambda: self.editSelection('ContactEditPage'))
         self.editTextsBut = tk.Button(self.editFrame, text = 'Edit Texts', command = lambda:self.editSelection('TextEditPage'))
 
         #
@@ -87,7 +87,7 @@ class SelectorPage(tk.Frame):
             except:
                 pass
         if selectedKontakt:
-            self.controller.frames['EditPage'].update(self.controller.kontakts[selection])
+            self.controller.frames['ContactEditPage'].update(self.controller.kontakts[selection])
         if selectedText:
             self.controller.frames['TextEditPage'].update(selectedText)
 

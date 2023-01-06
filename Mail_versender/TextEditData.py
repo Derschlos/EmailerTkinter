@@ -138,7 +138,7 @@ class TextEditPage(tk.Frame):
         self.textCombo['values'] = self.textChoices
         self.textIdByTitle = self.controller.textIdByTitle
         self.savedChanges = True
-        self.controller.frames['EditPage'].textCombo['values'] = self.controller.textChoices
+        self.controller.frames['ContactEditPage'].textCombo['values'] = self.controller.textChoices
         self.controller.returnToPrev(self.savedChanges, self.pageName)
         self.resetVals()
         
@@ -201,7 +201,7 @@ class TextEditPage(tk.Frame):
                     endChar = f'{search}+{countVar.get()}c'
                     self.textField.tag_add(title, search, endChar)
                     start = endChar
-        self.controller.frames['EditPage'].update(self.selectedText)
+        self.controller.frames['ContactEditPage'].update(self.selectedText)
 
     def tagger(self, tagName):
         '''adds a tag of tagName to the selected text'''
@@ -222,8 +222,8 @@ class TextEditPage(tk.Frame):
             self.textChoices = self.controller.textChoices
             self.textCombo['values'] = self.textChoices
             self.textIdByTitle = self.controller.textIdByTitle
-            self.controller.frames['EditPage'].resetVals()
-            self.controller.frames['EditPage'].textCombo['values'] = self.controller.textChoices
+            self.controller.frames['ContactEditPage'].resetVals()
+            self.controller.frames['ContactEditPage'].textCombo['values'] = self.controller.textChoices
         else:
             return
     

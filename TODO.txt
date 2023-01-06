@@ -6,10 +6,12 @@ SelectorPageData:
 
 
 EditPageData:
-(structural) find a way to rename file to ContactEditData.
+!DONE:(structural) find a way to rename file to ContactEditData.!DONE
 (structural) find a way to group or sort titles in the spinner to prevent having to search when a lot of Contacts are present.
 
 
 TextEditData:
 (code) prevent "bug" where two linebreaks transform into two blank lines
 (cosmetic) add labels to communicate functions to user
+
+
