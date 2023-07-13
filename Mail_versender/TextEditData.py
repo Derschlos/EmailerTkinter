@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
-from Models import Kontakt,MailText
+import pyautogui as pag
 import re
 import tkinter.font
+from Models import Kontakt,MailText
 
 class TextEditPage(tk.Frame):
     def __init__(self,parent, controller):
@@ -37,6 +38,7 @@ class TextEditPage(tk.Frame):
         self.textSubjLab = tk.Label(self.selectFrame, text = 'Subject', bg = self.bg)
         self.textSubjEnt = tk.Entry(self.selectFrame, textvariable = self.textSubjVar, width = 49)
         self.deleteTextBut = tk.Button(self.selectFrame, text = "Delete text", command = self.deleteText, state= 'disabled')
+        self.textSubjEnt.bind("<Button-3>", self.menuPopUp)
         
             # Main Text Frame
         self.textFrame = tk.Frame(self, bg=self.bg)
@@ -45,6 +47,7 @@ class TextEditPage(tk.Frame):
         self.textXScroll = tk.ttk.Scrollbar(self.textFrame, orient='horizontal', command= self.textField.xview)
         self.textField['yscrollcommand'] = self.textYScroll.set
         self.textField['xscrollcommand'] = self.textXScroll.set
+        self.textField.bind("<Button-3>", self.menuPopUp)
 
             # tags for editing Text
         self.tagFrame = tk.Frame(self, bg = self.bg)
@@ -64,7 +67,15 @@ class TextEditPage(tk.Frame):
         self.textField.tag_configure("italic",font=italicFont)
         self.textField.tag_configure("underlined",font=underlinedFont)
 
-
+            # Ribbon Menu
+        self.textMenu = tk.Menu(self.controller.root, tearoff = 0)
+        self.textMenu.add_command(label = "Einfügen",
+                                  command = lambda: pag.hotkey('ctrl','v') )
+        self.textMenu.add_command(label = "Kopieren",
+                                  command = lambda: pag.hotkey('ctrl','c') )
+        self.textMenu.add_command(label = "Ausschneiden",
+                                  command = lambda: pag.hotkey('ctrl','x') )
+        
 
             # Grid Config        
         
@@ -106,7 +117,11 @@ class TextEditPage(tk.Frame):
                 self.displayText('event')
 
     
-        
+    def menuPopUp(self, event):
+        try:
+            self.textMenu.tk_popup(event.x_root, event.y_root)
+        finally:
+            self.textMenu.grab_release()
 
     def saveChanges(self):
         '''gets changes, writes to db , then updates all Combos/Values''' 
